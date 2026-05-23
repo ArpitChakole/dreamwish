@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, Sparkles, ArrowRight, ArrowLeft, 
+  Sparkles, ArrowRight, ArrowLeft, 
   History, Volume2, Info
 } from 'lucide-react';
 import type { CardState, Occasion, FlowerSelection } from './types';
@@ -335,9 +335,23 @@ function App() {
           {!isEnvelopeOpened ? (
             <div className="w-full text-center space-y-6">
               {/* Header Logo */}
-              <div className="flex items-center justify-center gap-1 opacity-80">
+              <div className="flex items-center justify-center gap-2 opacity-90">
+                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(168,85,247,0.15)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="logo-grad-rec" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#A855F7" />
+                      <stop offset="50%" stopColor="#EC4899" />
+                      <stop offset="100%" stopColor="#EAB308" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="48" fill="url(#logo-grad-rec)" />
+                  <path d="M25 45 L50 65 L75 45 L75 75 C75 77.8 72.8 80 70 80 L30 80 C27.2 80 25 77.8 25 75 Z" fill="white" fillOpacity="0.22" />
+                  <path d="M42 55 C37 50 38 35 44 26 C46 23 50 25 50 30 C50 25 54 23 56 26 C62 35 63 50 58 55 C55 58 45 58 42 55 Z" fill="white" />
+                  <path d="M50 58 C47 50 48 42 50 32 C52 42 53 50 50 58 Z" fill="#FCE7F3" opacity="0.9" />
+                  <path d="M25 76 L50 58 L75 76" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M25 45 L50 28 L75 45" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
+                </svg>
                 <span className="text-xl font-bold font-serif italic text-purple-950">DreamWish</span>
-                <Heart size={14} fill="#c084fc" className="text-purple-400" />
               </div>
               
               <Envelope
@@ -371,10 +385,22 @@ function App() {
         <>
           {/* Header - No print */}
           <header className="w-full py-4 px-6 bg-white/40 border-b border-stone-200/50 backdrop-blur-xs flex items-center justify-between no-print">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 via-pink-400 to-amber-400 flex items-center justify-center text-white text-base shadow-sm">
-                ✉️
-              </div>
+            <div className="flex items-center gap-2.5">
+              <svg className="w-9 h-9 drop-shadow-[0_2px_4px_rgba(168,85,247,0.15)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="logo-grad-cre" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#A855F7" />
+                    <stop offset="50%" stopColor="#EC4899" />
+                    <stop offset="100%" stopColor="#EAB308" />
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="url(#logo-grad-cre)" />
+                <path d="M25 45 L50 65 L75 45 L75 75 C75 77.8 72.8 80 70 80 L30 80 C27.2 80 25 77.8 25 75 Z" fill="white" fillOpacity="0.22" />
+                <path d="M42 55 C37 50 38 35 44 26 C46 23 50 25 50 30 C50 25 54 23 56 26 C62 35 63 50 58 55 C55 58 45 58 42 55 Z" fill="white" />
+                <path d="M50 58 C47 50 48 42 50 32 C52 42 53 50 50 58 Z" fill="#FCE7F3" opacity="0.9" />
+                <path d="M25 76 L50 58 L75 76" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M25 45 L50 28 L75 45" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
+              </svg>
               <div>
                 <h1 className="font-serif text-lg font-bold leading-none text-purple-950 italic">DreamWish</h1>
                 <span className="text-[10px] text-purple-900/40 uppercase tracking-widest font-bold">Flower & Greeting Cards</span>
@@ -478,18 +504,15 @@ function App() {
                         <button
                           key={occ.id}
                           onClick={() => handleSelectOccasion(occ.id)}
-                          className={`p-3 lg:p-4 rounded-2xl border text-center flex flex-col justify-between items-center h-20 lg:h-32 transition-all cursor-pointer ${
+                          className={`p-3 lg:p-4 rounded-2xl border text-center flex flex-col justify-center items-center h-20 lg:h-32 transition-all cursor-pointer ${
                             occasion === occ.id
-                              ? 'bg-white border-purple-500 ring-4 ring-purple-100/50 shadow-md font-bold scale-[1.03]'
-                              : 'bg-white/80 border-stone-200/50 hover:bg-white hover:border-purple-200 hover:shadow-xs'
+                              ? 'bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-500 border-transparent text-white shadow-lg shadow-purple-500/10 scale-[1.04]'
+                              : 'bg-white/80 border-stone-200/50 hover:bg-white hover:border-purple-200 hover:shadow-xs text-purple-950'
                           }`}
                         >
-                          <div className="text-3xl filter drop-shadow-sm">{occ.emoji}</div>
-                          <div>
-                            <div className="text-sm text-purple-950 font-bold leading-tight">{occ.name}</div>
-                            <span className="text-xs uppercase tracking-wider text-purple-900/40 font-semibold block mt-1">
-                              {occ.id === occasion ? 'Active Theme' : 'Select'}
-                            </span>
+                          <div className="text-3xl filter drop-shadow-sm mb-1">{occ.emoji}</div>
+                          <div className={`text-[13px] lg:text-sm font-bold leading-tight ${occasion === occ.id ? 'text-white' : 'text-purple-950'}`}>
+                            {occ.name}
                           </div>
                         </button>
                       ))}

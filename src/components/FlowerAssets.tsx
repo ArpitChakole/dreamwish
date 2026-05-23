@@ -150,7 +150,7 @@ export const BloomSVG: React.FC<{ type: string; color: string; scale?: number }>
             </radialGradient>
           </defs>
           {/* 6 star petals */}
-          <g>
+          <g stroke="#C5C2C0" strokeWidth="0.6">
             <path d="M 50 50 C 50 30 40 5 50 0 C 60 5 50 30 50 50 Z" fill="url(#lily-grad)" />
             <path d="M 50 50 C 65 35 95 40 100 50 C 95 60 65 65 50 50 Z" fill="url(#lily-grad)" />
             <path d="M 50 50 C 35 65 5 60 0 50 C 5 40 35 35 50 50 Z" fill="url(#lily-grad)" />
@@ -311,7 +311,7 @@ export const BloomSVG: React.FC<{ type: string; color: string; scale?: number }>
                   d="M 50 50 C 47 30 46 8 50 2 C 54 8 53 30 50 50 Z"
                   fill="#FAFAF9"
                   transform={`rotate(${rotation} 50 50)`}
-                  stroke="#E7E5E4"
+                  stroke="#B5B2B0"
                   strokeWidth="0.5"
                 />
               );

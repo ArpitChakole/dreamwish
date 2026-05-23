@@ -2,7 +2,7 @@ import React from 'react';
 import { FLOWER_LIST, BloomSVG, AssembledFlower } from './FlowerAssets';
 import type { FlowerSelection } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Trash2, HelpCircle } from 'lucide-react';
+import { Plus, Minus, Trash2, HelpCircle, Shuffle, Sparkles } from 'lucide-react';
 
 interface BouquetBuilderProps {
   selectedFlowers: FlowerSelection[];
@@ -51,6 +51,39 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
   // Remove a specific flower instance by ID
   const handleRemoveInstance = (instanceId: string) => {
     onChangeFlowers(selectedFlowers.filter(f => f.id !== instanceId));
+  };
+
+  // Generate a random bouquet
+  const handleRandomBouquet = () => {
+    const targetCount = 8 + Math.floor(Math.random() * 9); // random total flowers between 8 and 16
+    const newFlowers: FlowerSelection[] = [];
+    const counts: Record<string, number> = {};
+
+    // Initialize counts
+    FLOWER_LIST.forEach(f => { counts[f.id] = 0; });
+
+    for (let i = 0; i < targetCount; i++) {
+      const available = FLOWER_LIST.filter(f => counts[f.id] < MAX_PER_TYPE);
+      if (available.length === 0) break;
+
+      const flower = available[Math.floor(Math.random() * available.length)];
+      counts[flower.id]++;
+
+      newFlowers.push({
+        id: `${flower.id}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}-${i}`,
+        flowerId: flower.id,
+        color: flower.defaultColor
+      });
+    }
+
+    onChangeFlowers(newFlowers);
+  };
+
+  // Shuffle the layout order of selected flowers
+  const handleShuffle = () => {
+    if (selectedFlowers.length <= 1) return;
+    const shuffled = [...selectedFlowers].sort(() => Math.random() - 0.5);
+    onChangeFlowers(shuffled);
   };
 
   // Clear bouquet
@@ -202,22 +235,45 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
       {/* 1. Flower Picker Controls - 5 columns */}
       <div className="lg:col-span-5 space-y-6 w-full order-2 lg:order-1">
         <div className="glass-panel p-6 rounded-2xl shadow-sm border border-white/50 space-y-4">
-          <div className="flex items-center justify-between border-b border-purple-100 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-purple-100 pb-3">
             <div>
               <h3 className="font-serif text-xl font-bold text-purple-950">Select Blooms</h3>
               <p className="text-xs text-purple-900/60 mt-0.5">
                 Up to {MAX_TOTAL_FLOWERS} flowers. Max {MAX_PER_TYPE} of each type.
               </p>
             </div>
-            {selectedFlowers.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 self-end sm:self-auto">
               <button
-                onClick={handleClear}
-                className="flex items-center justify-center gap-1.5 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-50 px-3 py-2 min-h-[48px] rounded-md transition-colors"
+                onClick={handleRandomBouquet}
+                className="flex items-center justify-center gap-1.5 text-xs bg-purple-50 text-purple-700 hover:bg-purple-100 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-purple-200/50 shadow-2xs"
+                title="Generate a random bouquet"
               >
-                <Trash2 size={13} />
-                <span>Clear All</span>
+                <Sparkles size={13} className="text-purple-600 animate-pulse" />
+                <span>Random</span>
               </button>
-            )}
+              
+              {selectedFlowers.length > 1 && (
+                <button
+                  onClick={handleShuffle}
+                  className="flex items-center justify-center gap-1.5 text-xs bg-stone-50 text-stone-700 hover:bg-stone-100 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-stone-200/50 shadow-2xs"
+                  title="Shuffle flower positions"
+                >
+                  <Shuffle size={13} className="text-stone-500" />
+                  <span>Shuffle</span>
+                </button>
+              )}
+
+              {selectedFlowers.length > 0 && (
+                <button
+                  onClick={handleClear}
+                  className="flex items-center justify-center gap-1.5 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-rose-100 shadow-2xs"
+                  title="Clear all flowers"
+                >
+                  <Trash2 size={13} />
+                  <span>Clear</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Bouquet Size Progress Bar */}
@@ -250,7 +306,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     {/* Flower mini circle preview */}
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-stone-50 border border-stone-100 relative shrink-0">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200/50 border border-stone-200/40 relative shrink-0 shadow-inner">
                       <svg viewBox="0 0 100 100" className="w-8 h-8">
                         <BloomSVG type={flower.id} color={flower.defaultColor} scale={0.9} />
                       </svg>
