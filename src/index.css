@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  
+  --color-gold-50: #fdfbf7;
+  --color-gold-100: #fbf7ec;
+  --color-gold-200: #f6edd0;
+  --color-gold-300: #ebd8a0;
+  --color-gold-400: #dcb866;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #c5a028;
+  --color-gold-700: #a3801d;
+  
+  --animate-petal-fall-1: petal-fall-1 12s linear infinite;
+  --animate-petal-fall-2: petal-fall-2 15s linear infinite;
+  --animate-petal-fall-3: petal-fall-3 18s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-sway: sway 4s ease-in-out infinite;
+
+  @keyframes petal-fall-1 {
+    0% { transform: translateY(-10vh) translateX(0vw) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(110vh) translateX(20vw) rotate(360deg); opacity: 0; }
+  }
+  @keyframes petal-fall-2 {
+    0% { transform: translateY(-10vh) translateX(0vw) rotate(0deg); opacity: 0; }
+    15% { opacity: 0.6; }
+    85% { opacity: 0.6; }
+    100% { transform: translateY(110vh) translateX(-15vw) rotate(-270deg); opacity: 0; }
+  }
+  @keyframes petal-fall-3 {
+    0% { transform: translateY(-10vh) translateX(0vw) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { transform: translateY(110vh) translateX(10vw) rotate(180deg); opacity: 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-1.5deg) translateY(0px); }
+    50% { transform: rotate(1.5deg) translateY(-2px); }
+  }
+}
+
+/* Base body and font setups */
+:root {
+  font-size: 18px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    font-size: 20px;
+  }
+}
+
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+body {
+  background: radial-gradient(circle at top right, #fff5f7 0%, #fbf7ec 50%, #f6f3ff 100%);
+  color: #3f3b47;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism utility card */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-panel-dark {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.03), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+/* Elegant custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Script writing typography animation */
+.font-cursive {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
+
+/* Card details card styling */
+.card-content-shadow {
+  box-shadow: 0 10px 40px -10px rgba(107, 78, 113, 0.15);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Print layout optimizations */
+@media print {
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide creator UI, background elements, and share controls during printing */
+  .no-print,
+  button,
+  .z-50, /* Hide music controls */
+  .gift-note-badge { /* Hide footer watermark */
+    display: none !important;
+  }
+  
+  /* Center and scale card for printing */
+  .card-content-shadow {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 2rem !important;
+    page-break-inside: avoid;
+  }
+}
