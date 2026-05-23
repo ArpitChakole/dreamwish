@@ -86,6 +86,7 @@ function App() {
   const [selectedFlowers, setSelectedFlowers] = useState<FlowerSelection[]>([]);
   const [wrapStyle, setWrapStyle] = useState<'kraft' | 'blush' | 'mesh' | 'gold'>('kraft');
   const [music, setMusic] = useState<string>('none');
+  const [cardBg, setCardBg] = useState<'white' | 'silver' | 'slate' | 'blush' | 'gold'>('white');
 
   // Interactive UI elements
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -253,6 +254,7 @@ function App() {
     setSelectedFlowers(saved.flowers);
     setWrapStyle(saved.wrapStyle);
     setMusic(saved.music);
+    setCardBg(saved.cardBg || 'white');
     setStep(5); // Go straight to preview
     setShowHistory(false);
   };
@@ -278,7 +280,8 @@ function App() {
     message: message.trim() || 'Wishing you the absolute best!',
     flowers: selectedFlowers,
     music,
-    wrapStyle
+    wrapStyle,
+    cardBg
   });
 
   const handleNextStep = () => {
@@ -310,6 +313,7 @@ function App() {
     setSelectedFlowers([]);
     setWrapStyle('kraft');
     setMusic('none');
+    setCardBg('white');
     if (audioRef.current) {
       audioRef.current.pause();
       setIsMusicPlaying(false);
@@ -568,7 +572,7 @@ function App() {
                             id="sender-input"
                             name="sender"
                             type="text"
-                            placeholder="e.g. Srilila"
+                            placeholder="e.g. Rutuja"
                             value={sender}
                             onChange={(e) => setSender(e.target.value)}
                             maxLength={25}
@@ -678,6 +682,8 @@ function App() {
                       onChangeFlowers={setSelectedFlowers}
                       wrapStyle={wrapStyle}
                       onChangeWrapStyle={setWrapStyle}
+                      cardBg={cardBg}
+                      onChangeCardBg={setCardBg}
                     />
 
                     {/* Wizard controls */}
@@ -954,12 +960,24 @@ function App() {
             )}
           </AnimatePresence>
 
-          {/* Footer - No print */}
-          <footer className="w-full py-4 text-center text-[10px] text-purple-900/30 uppercase tracking-widest font-bold border-t border-stone-200/20 bg-stone-50/20 no-print">
-            © {new Date().getFullYear()} DreamWish. Handcrafted flowers and wishes.
-          </footer>
         </>
       )}
+
+      {/* Footer - No print */}
+      {/* <footer className="w-full py-4 text-center text-xs text-purple-900/40 font-semibold border-t border-stone-200/20 bg-stone-50/10 no-print">
+        Made with love ❤️ by Arpit
+      </footer> */}
+
+      <footer className="w-full py-4 text-center border-t border-stone-200/20 bg-stone-50/10 no-print space-y-1">
+        <div className="text-[10px] text-purple-900/30 uppercase tracking-widest font-bold">
+          © {new Date().getFullYear()} DreamWish. Handcrafted flowers and wishes.
+        </div>
+
+        <div className="text-xs text-purple-900/40 font-semibold">
+          Made with love ❤️ by Arpit
+        </div>
+      </footer>
+
     </div>
   );
 }

@@ -36,6 +36,7 @@ export interface CardState {
   flowers: FlowerSelection[];
   music: string;       // Audio track ID ('none', 'piano', 'guitar', 'harp')
   wrapStyle: 'kraft' | 'blush' | 'mesh' | 'gold';
+  cardBg?: 'white' | 'silver' | 'slate' | 'blush' | 'gold';
 }
 
 export interface AudioTrack {

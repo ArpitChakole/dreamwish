@@ -12,7 +12,8 @@ const DEFAULT_STATE: CardState = {
     { id: 'lavender-1', flowerId: 'lavender', color: '#8B5CF6' }
   ],
   music: 'none',
-  wrapStyle: 'kraft'
+  wrapStyle: 'kraft',
+  cardBg: 'white'
 };
 
 /**
@@ -51,7 +52,8 @@ export function deserializeCardState(compressedStr: string): CardState {
       message: state.message || 'Hope your day blooms with happiness!',
       flowers: Array.isArray(state.flowers) ? state.flowers : [],
       music: state.music || 'none',
-      wrapStyle: state.wrapStyle || 'kraft'
+      wrapStyle: state.wrapStyle || 'kraft',
+      cardBg: state.cardBg || 'white'
     };
   } catch (error) {
     console.error('Failed to deserialize card state:', error);

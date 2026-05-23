@@ -40,7 +40,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
   // SVG Geometry for Bouquet layout
   const wrapX = 200;
-  const wrapY = 410;
+  const wrapY = 425;
 
   const positionedFlowers = state.flowers.map((selection, index) => {
     const total = state.flowers.length;
@@ -48,11 +48,11 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
     
     let angle = 0;
     if (total > 1) {
-      const spread = 70;
+      const spread = 75; // Align both to 75
       angle = -spread / 2 + (spread / (total - 1)) * index;
     }
 
-    const baseRadius = 240;
+    const baseRadius = 260; // Increased from 240
     const staggeredOffset = (index % 2 === 0 ? 25 : -25) + (index % 3 === 0 ? 10 : -10);
     const radius = baseRadius + staggeredOffset;
 
@@ -60,7 +60,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
     const bloomX = wrapX + radius * Math.sin(rad);
     const bloomY = wrapY - radius * Math.cos(rad);
 
-    const scale = 1.15 + (index % 4) * 0.08;
+    const scale = 1.3 + (index % 4) * 0.08; // Increased from 1.15
     const bloomRotation = angle + ((index % 3) - 1) * 12;
 
     return {
@@ -90,27 +90,27 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
     return (
       <g>
-        {/* Paper Fold Base */}
+        {/* Background wrapping paper fold - Enlarged for better presence */}
         <path
-          d="M 120 280 C 140 330 150 380 200 450 C 250 380 260 330 280 280 L 200 240 Z"
+          d="M 100 260 C 130 325 150 390 200 470 C 250 390 270 325 300 260 L 200 220 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
           opacity="0.8"
         />
         
-        {/* Left overlap fold */}
+        {/* Left wrap fold overlay */}
         <path
-          d="M 110 270 C 130 350 160 410 200 455 C 190 380 160 330 110 270 Z"
+          d="M 90 250 C 120 350 150 420 200 475 C 190 390 150 330 90 250 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
           opacity="0.9"
         />
 
-        {/* Right overlap fold */}
+        {/* Right wrap fold overlay */}
         <path
-          d="M 290 270 C 270 350 240 410 200 455 C 210 380 240 330 290 270 Z"
+          d="M 310 250 C 280 350 250 420 200 475 C 210 390 250 330 310 250 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
@@ -119,7 +119,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
         {state.wrapStyle === 'mesh' && (
           <path
-            d="M 120 280 L 280 280 M 130 310 L 270 310 M 140 340 L 260 340 M 150 370 L 250 370"
+            d="M 100 260 L 300 260 M 115 295 L 285 295 M 130 330 L 270 330 M 145 365 L 255 365 M 160 400 L 240 400"
             stroke="#FFFFFF"
             strokeWidth="1"
             strokeDasharray="3 3"
@@ -130,7 +130,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
         {state.wrapStyle === 'gold' && (
           <path
-            d="M 120 280 Q 200 240 280 280"
+            d="M 100 260 Q 200 220 300 260"
             stroke="#CA8A04"
             strokeWidth="2.5"
             fill="none"
@@ -138,7 +138,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
         )}
         
         {/* Ribbon Bow tied */}
-        <g transform="translate(200, 410)">
+        <g transform="translate(200, 425)">
           <path
             d="M 0 0 C -15 20 -20 40 -15 55 M 0 0 C 15 20 20 40 15 55"
             fill="none"
@@ -180,8 +180,25 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
     }
   };
 
+  // Map background styles
+  const getBgStyle = () => {
+    switch (state.cardBg) {
+      case 'silver':
+        return 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border border-slate-200';
+      case 'slate':
+        return 'bg-gradient-to-br from-[#cbd5e1] via-[#f1f5f9] to-[#94a3b8] border border-slate-300';
+      case 'blush':
+        return 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border border-pink-100';
+      case 'gold':
+        return 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border border-amber-100';
+      case 'white':
+      default:
+        return 'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border border-purple-100/30';
+    }
+  };
+
   return (
-    <div className="relative w-full min-h-[90vh] flex flex-col items-center justify-center py-6 px-4 overflow-hidden rounded-3xl">
+    <div className={`relative w-full min-h-[90vh] flex flex-col items-center justify-center py-6 px-4 overflow-hidden rounded-3xl shadow-sm transition-all duration-500 ${getBgStyle()}`}>
       {/* 1. HTML5 Falling Petal Particles (CSS-Accelerated) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {petals.map((petal) => (
@@ -242,10 +259,19 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
         {/* COL 1: The Floral Arrangement (6 cols) */}
         <div className="col-span-12 md:col-span-6 w-full flex flex-col items-center">
-          <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[380px] md:max-w-full aspect-[4/5]">
+          <div className={`relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[380px] md:max-w-full aspect-[4/5] rounded-3xl shadow-xl p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden transition-all duration-500 border ${
+            state.cardBg === 'silver' ? 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border-slate-200' :
+            state.cardBg === 'slate' ? 'bg-gradient-to-br from-[#cbd5e1] via-[#f1f5f9] to-[#94a3b8] border-slate-300' :
+            state.cardBg === 'blush' ? 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border-pink-100' :
+            state.cardBg === 'gold' ? 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border-amber-100' :
+            'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border-purple-100/30'
+          }`}>
+            {/* Subtle grid background to look premium */}
+            <div className="absolute inset-0 bg-[radial-gradient(#f4eef5_1px,transparent_1px)] [background-size:16px_16px] opacity-60 pointer-events-none" />
+
             <svg
               viewBox="0 0 400 500"
-              className="w-full h-full drop-shadow-[0_8px_20px_rgba(92,72,100,0.08)] animate-sway"
+              className="w-full h-full drop-shadow-[0_8px_20px_rgba(92,72,100,0.08)] animate-sway relative z-10"
             >
               {/* Stems */}
               <g>

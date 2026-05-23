@@ -9,13 +9,17 @@ interface BouquetBuilderProps {
   onChangeFlowers: (flowers: FlowerSelection[]) => void;
   wrapStyle: 'kraft' | 'blush' | 'mesh' | 'gold';
   onChangeWrapStyle: (style: 'kraft' | 'blush' | 'mesh' | 'gold') => void;
+  cardBg: 'white' | 'silver' | 'slate' | 'blush' | 'gold';
+  onChangeCardBg: (bg: 'white' | 'silver' | 'slate' | 'blush' | 'gold') => void;
 }
 
 export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
   selectedFlowers,
   onChangeFlowers,
   wrapStyle,
-  onChangeWrapStyle
+  onChangeWrapStyle,
+  cardBg,
+  onChangeCardBg
 }) => {
   const MAX_TOTAL_FLOWERS = 20;
   const MAX_PER_TYPE = 4;
@@ -48,10 +52,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
     onChangeFlowers(updated);
   };
 
-  // Remove a specific flower instance by ID
-  const handleRemoveInstance = (instanceId: string) => {
-    onChangeFlowers(selectedFlowers.filter(f => f.id !== instanceId));
-  };
+
 
   // Generate a random bouquet
   const handleRandomBouquet = () => {
@@ -98,14 +99,14 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
   // SVG Geometry for Bouquet layout
   const wrapX = 200;
-  const wrapY = 410;
+  const wrapY = 425;
 
   // Compute positions of each flower dynamically based on index and total count
   const positionedFlowers = selectedFlowers.map((selection, index) => {
     const total = selectedFlowers.length;
     const flowerConfig = FLOWER_LIST.find(f => f.id === selection.flowerId);
     
-    // Spread angle: from -35 deg to +35 deg
+    // Spread angle: from -37.5 deg to +37.5 deg
     let angle = 0;
     if (total > 1) {
       const spread = 75; // total width of fan in degrees
@@ -114,7 +115,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
     // Radius: varies slightly to create staggered layers
     // Even indices are slightly higher, odd slightly lower
-    const baseRadius = 240;
+    const baseRadius = 260; // Increased from 240
     const staggeredOffset = (index % 2 === 0 ? 25 : -25) + (index % 3 === 0 ? 10 : -10);
     const radius = baseRadius + staggeredOffset;
 
@@ -124,7 +125,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
     const bloomY = wrapY - radius * Math.cos(rad);
 
     // Minor random-looking scales and rotation variations
-    const scale = 1.15 + (index % 4) * 0.08;
+    const scale = 1.3 + (index % 4) * 0.08; // Increased flower scale from 1.15
     const bloomRotation = angle + ((index % 3) - 1) * 12; // tilted slightly organic
 
     return {
@@ -157,9 +158,9 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
     return (
       <g>
-        {/* Background wrapping paper fold */}
+        {/* Background wrapping paper fold - Enlarged for better presence */}
         <path
-          d="M 120 280 C 140 330 150 380 200 450 C 250 380 260 330 280 280 L 200 240 Z"
+          d="M 100 260 C 130 325 150 390 200 470 C 250 390 270 325 300 260 L 200 220 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
@@ -168,7 +169,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
         
         {/* Left wrap fold overlay */}
         <path
-          d="M 110 270 C 130 350 160 410 200 455 C 190 380 160 330 110 270 Z"
+          d="M 90 250 C 120 350 150 420 200 475 C 190 390 150 330 90 250 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
@@ -177,7 +178,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
         {/* Right wrap fold overlay */}
         <path
-          d="M 290 270 C 270 350 240 410 200 455 C 210 380 240 330 290 270 Z"
+          d="M 310 250 C 280 350 250 420 200 475 C 210 390 250 330 310 250 Z"
           fill={paperColor}
           stroke={paperStroke}
           strokeWidth="1.5"
@@ -187,7 +188,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
         {/* Mesh pattern overlay if selected */}
         {wrapStyle === 'mesh' && (
           <path
-            d="M 120 280 L 280 280 M 130 310 L 270 310 M 140 340 L 260 340 M 150 370 L 250 370"
+            d="M 100 260 L 300 260 M 115 295 L 285 295 M 130 330 L 270 330 M 145 365 L 255 365 M 160 400 L 240 400"
             stroke="#FFFFFF"
             strokeWidth="1"
             strokeDasharray="3 3"
@@ -199,15 +200,15 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
         {/* Gold accent trim for gold style */}
         {wrapStyle === 'gold' && (
           <path
-            d="M 120 280 Q 200 240 280 280"
+            d="M 100 260 Q 200 220 300 260"
             stroke="#CA8A04"
             strokeWidth="2.5"
             fill="none"
           />
         )}
         
-        {/* Bow and Ribbon tied at (200, 410) */}
-        <g transform="translate(200, 410)">
+        {/* Bow and Ribbon tied at (200, 425) */}
+        <g transform="translate(200, 425)">
           {/* Ribbon tails hanging down */}
           <path
             d="M 0 0 C -15 20 -20 40 -15 55 M 0 0 C 15 20 20 40 15 55"
@@ -383,11 +384,46 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
             ))}
           </div>
         </div>
+
+        {/* Backdrop Selector */}
+        <div className="glass-panel p-5 rounded-2xl shadow-sm border border-white/50 space-y-3">
+          <h4 className="text-xs uppercase tracking-wider text-purple-950 font-bold">
+            Select Card Backdrop Style
+          </h4>
+          <div className="grid grid-cols-5 gap-1.5">
+            {[
+              { id: 'white', name: 'White', bgClass: 'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border border-purple-100/30' },
+              { id: 'silver', name: 'Silver', bgClass: 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border border-slate-200' },
+              { id: 'slate', name: 'Slate', bgClass: 'bg-gradient-to-br from-[#cbd5e1] via-[#f1f5f9] to-[#94a3b8] border border-slate-300' },
+              { id: 'blush', name: 'Blush', bgClass: 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border border-pink-100' },
+              { id: 'gold', name: 'Gold', bgClass: 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border border-amber-100' }
+            ].map((theme) => (
+              <button
+                key={theme.id}
+                onClick={() => onChangeCardBg(theme.id as any)}
+                className={`py-2 px-1 rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer flex flex-col items-center justify-center min-h-[58px] ${
+                  cardBg === theme.id
+                    ? 'border-purple-600 ring-2 ring-purple-100 shadow-sm font-bold scale-[1.03]'
+                    : 'border-stone-200/50 bg-white/70 text-purple-950 hover:bg-white'
+                }`}
+              >
+                <div className={`w-5 h-5 rounded-full mx-auto mb-1 border border-black/5 ${theme.bgClass}`} />
+                <span className="text-[9px] font-medium leading-none">{theme.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* 2. Visual Bouquet Canvas Preview - 7 columns */}
       <div className="lg:col-span-7 flex flex-col items-center order-1 lg:order-2 w-full sticky top-0 z-20 bg-stone-50/90 backdrop-blur-md py-4 lg:py-0 lg:bg-transparent lg:backdrop-blur-none border-b border-stone-200/20 lg:border-none">
-        <div className="relative w-full max-w-[420px] h-[320px] sm:h-[380px] lg:h-auto lg:aspect-[4/5] bg-white rounded-3xl shadow-xl border border-stone-200/40 p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden">
+        <div className={`relative w-full max-w-[420px] h-[320px] sm:h-[380px] lg:h-auto lg:aspect-[4/5] rounded-3xl shadow-xl p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden transition-all duration-500 ${
+          cardBg === 'silver' ? 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border border-slate-200' :
+          cardBg === 'slate' ? 'bg-gradient-to-br from-[#cbd5e1] via-[#f1f5f9] to-[#94a3b8] border border-slate-300' :
+          cardBg === 'blush' ? 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border border-pink-100' :
+          cardBg === 'gold' ? 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border border-amber-100' :
+          'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border border-purple-100/30'
+        }`}>
           {/* Subtle grid background to look premium */}
           <div className="absolute inset-0 bg-[radial-gradient(#f4eef5_1px,transparent_1px)] [background-size:16px_16px] opacity-60 pointer-events-none" />
 
@@ -467,27 +503,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
             </AnimatePresence>
           </div>
 
-          {/* Quick list of flowers in the bouquet, click to remove */}
-          {selectedFlowers.length > 0 && (
-            <div className="relative z-10 w-full bg-stone-50/80 backdrop-blur-xs rounded-2xl p-2 border border-stone-200/40">
-              <span className="text-[10px] uppercase tracking-wider text-purple-900/50 font-bold block mb-1 px-1">
-                Bouquet Layout (Tap to pluck out)
-              </span>
-              <div className="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto no-scrollbar">
-                {positionedFlowers.map((flower) => (
-                  <button
-                    key={flower.id}
-                    onClick={() => handleRemoveInstance(flower.id)}
-                    className="flex items-center gap-1.5 bg-white hover:bg-rose-50 text-xs text-purple-950 font-medium px-3.5 py-3 min-h-[48px] rounded-full border border-stone-200 hover:border-rose-200 shadow-2xs group transition-all"
-                  >
-                    <span>{flower.emoji}</span>
-                    <span className="group-hover:line-through group-hover:text-rose-500">{flower.name}</span>
-                    <Minus size={10} className="text-purple-400 group-hover:text-rose-500 ml-0.5 shrink-0" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
     </div>
