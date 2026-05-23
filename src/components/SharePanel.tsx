@@ -82,6 +82,8 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
               onClick={(e) => (e.target as HTMLInputElement).select()}
               className="w-full sm:flex-1 bg-stone-50/80 border border-stone-200/60 rounded-xl text-xs text-purple-950 font-semibold px-3 h-12 focus:outline-hidden truncate"
             />
+            {/* Subtle dividing line on mobile when stacked */}
+            <div className="block sm:hidden h-px bg-stone-200/40 w-[95%] mx-auto my-0.5" />
             <button
               onClick={handleCopyLink}
               className={`w-full sm:w-auto flex items-center justify-center gap-1.5 h-12 px-6 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shrink-0 ${

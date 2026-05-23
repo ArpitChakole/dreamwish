@@ -17,8 +17,8 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
   wrapStyle,
   onChangeWrapStyle
 }) => {
-  const MAX_TOTAL_FLOWERS = 10;
-  const MAX_PER_TYPE = 2;
+  const MAX_TOTAL_FLOWERS = 20;
+  const MAX_PER_TYPE = 4;
 
   // Add flower handler
   const handleAddFlower = (flowerId: string) => {
@@ -81,7 +81,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
     // Radius: varies slightly to create staggered layers
     // Even indices are slightly higher, odd slightly lower
-    const baseRadius = 220;
+    const baseRadius = 240;
     const staggeredOffset = (index % 2 === 0 ? 25 : -25) + (index % 3 === 0 ? 10 : -10);
     const radius = baseRadius + staggeredOffset;
 
@@ -91,7 +91,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
     const bloomY = wrapY - radius * Math.cos(rad);
 
     // Minor random-looking scales and rotation variations
-    const scale = 0.85 + (index % 4) * 0.05; // 0.85 to 1.00
+    const scale = 1.15 + (index % 4) * 0.08;
     const bloomRotation = angle + ((index % 3) - 1) * 12; // tilted slightly organic
 
     return {
@@ -265,7 +265,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
                         <span>{flower.name}</span>
                         <span className="text-xs font-normal text-purple-900/60">({flower.emoji})</span>
                       </div>
-                      <div className="text-[12px] text-purple-900/50 italic">{flower.meaning}</div>
+                      <div className="text-xs text-purple-900/50 italic">{flower.meaning}</div>
                     </div>
                   </div>
 
@@ -331,7 +331,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
       {/* 2. Visual Bouquet Canvas Preview - 7 columns */}
       <div className="lg:col-span-7 flex flex-col items-center order-1 lg:order-2 w-full sticky top-0 z-20 bg-stone-50/90 backdrop-blur-md py-4 lg:py-0 lg:bg-transparent lg:backdrop-blur-none border-b border-stone-200/20 lg:border-none">
-        <div className="relative w-full max-w-[420px] h-[240px] sm:h-[300px] lg:h-auto lg:aspect-[4/5] bg-white rounded-3xl shadow-xl border border-stone-200/40 p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden">
+        <div className="relative w-full max-w-[420px] h-[320px] sm:h-[380px] lg:h-auto lg:aspect-[4/5] bg-white rounded-3xl shadow-xl border border-stone-200/40 p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden">
           {/* Subtle grid background to look premium */}
           <div className="absolute inset-0 bg-[radial-gradient(#f4eef5_1px,transparent_1px)] [background-size:16px_16px] opacity-60 pointer-events-none" />
 

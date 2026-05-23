@@ -396,41 +396,59 @@ function App() {
           </header>
 
           <main className="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
-            
             {/* Steps Wizard Progress Indicator - No print */}
             {step < 5 && (
-              <div className="max-w-2xl w-full mx-auto mb-10 no-print">
-                <div className="flex justify-between items-center relative">
-                  {/* Connecting bar */}
-                  <div className="absolute left-0 right-0 h-0.5 bg-stone-200/80 -z-10" />
-                  <div 
-                    className="absolute left-0 h-0.5 bg-purple-500 -z-10 transition-all duration-300"
-                    style={{ width: `${((step - 1) / 3) * 100}%` }}
-                  />
+              <div className="max-w-2xl w-full mx-auto mb-6 sm:mb-10 no-print">
+                {/* Mobile view */}
+                <div className="sm:hidden flex flex-col gap-2">
+                  <div className="text-xs text-purple-950 font-bold uppercase tracking-wider flex justify-between items-center px-1">
+                    <span>Step {step} of 4</span>
+                    <span className="text-purple-600">
+                      {['Choose Theme', 'Write Message', 'Assemble Bouquet', 'Select Music'][step - 1]}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-stone-200/80 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-purple-600 transition-all duration-300"
+                      style={{ width: `${(step / 4) * 100}%` }}
+                    />
+                  </div>
+                </div>
 
-                  {/* Nodes */}
-                  {['Occasion', 'Message', 'Bouquet', 'Music'].map((name, i) => {
-                    const active = step >= i + 1;
-                    const current = step === i + 1;
-                    return (
-                      <div key={name} className="flex flex-col items-center">
-                        <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold transition-all ${
-                          current 
-                            ? 'bg-purple-600 border-purple-600 text-white shadow-md ring-4 ring-purple-100 scale-105' 
-                            : active 
-                              ? 'bg-purple-100 border-purple-400 text-purple-700' 
-                              : 'bg-white border-stone-200 text-stone-400'
-                        }`}>
-                          {i + 1}
+                {/* Desktop/Tablet view */}
+                <div className="hidden sm:block">
+                  <div className="flex justify-between items-center relative">
+                    {/* Connecting bar */}
+                    <div className="absolute left-0 right-0 h-0.5 bg-stone-200/80 -z-10" />
+                    <div 
+                      className="absolute left-0 h-0.5 bg-purple-500 -z-10 transition-all duration-300"
+                      style={{ width: `${((step - 1) / 3) * 100}%` }}
+                    />
+
+                    {/* Nodes */}
+                    {['Occasion', 'Message', 'Bouquet', 'Music'].map((name, i) => {
+                      const active = step >= i + 1;
+                      const current = step === i + 1;
+                      return (
+                        <div key={name} className="flex flex-col items-center">
+                          <div className={`w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold transition-all ${
+                            current 
+                              ? 'bg-purple-600 border-purple-600 text-white shadow-md ring-4 ring-purple-100 scale-105' 
+                              : active 
+                                ? 'bg-purple-100 border-purple-400 text-purple-700' 
+                                : 'bg-white border-stone-200 text-stone-400'
+                          }`}>
+                            {i + 1}
+                          </div>
+                          <span className={`text-sm font-semibold mt-1.5 uppercase tracking-wider ${
+                            current ? 'text-purple-600 font-extrabold' : active ? 'text-purple-900/60' : 'text-stone-400'
+                          }`}>
+                            {name}
+                          </span>
                         </div>
-                        <span className={`text-sm font-semibold mt-1.5 uppercase tracking-wider ${
-                          current ? 'text-purple-600 font-extrabold' : active ? 'text-purple-900/60' : 'text-stone-400'
-                        }`}>
-                          {name}
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
@@ -460,7 +478,7 @@ function App() {
                         <button
                           key={occ.id}
                           onClick={() => handleSelectOccasion(occ.id)}
-                          className={`p-4 rounded-2xl border text-center flex flex-col justify-between items-center h-24 lg:h-32 transition-all cursor-pointer ${
+                          className={`p-3 lg:p-4 rounded-2xl border text-center flex flex-col justify-between items-center h-20 lg:h-32 transition-all cursor-pointer ${
                             occasion === occ.id
                               ? 'bg-white border-purple-500 ring-4 ring-purple-100/50 shadow-md font-bold scale-[1.03]'
                               : 'bg-white/80 border-stone-200/50 hover:bg-white hover:border-purple-200 hover:shadow-xs'
@@ -509,10 +527,12 @@ function App() {
                       {/* Sender and Recipient */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                          <label className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">To (Recipient)</label>
+                          <label htmlFor="recipient-input" className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">To (Recipient)</label>
                           <input
+                            id="recipient-input"
+                            name="recipient"
                             type="text"
-                            placeholder="e.g. Sarah"
+                            placeholder="e.g. Arpit"
                             value={recipient}
                             onChange={(e) => setRecipient(e.target.value)}
                             maxLength={25}
@@ -520,10 +540,12 @@ function App() {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">From (Sender)</label>
+                          <label htmlFor="sender-input" className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">From (Sender)</label>
                           <input
+                            id="sender-input"
+                            name="sender"
                             type="text"
-                            placeholder="e.g. David"
+                            placeholder="e.g. Srilila"
                             value={sender}
                             onChange={(e) => setSender(e.target.value)}
                             maxLength={25}
@@ -535,12 +557,14 @@ function App() {
                       {/* Text Message Textarea */}
                       <div className="space-y-1.5 relative">
                         <div className="flex justify-between items-center">
-                          <label className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">Greeting Message</label>
+                          <label htmlFor="message-input" className="text-[11px] uppercase tracking-wider text-purple-950 font-bold">Greeting Message</label>
                           <span className={`text-[10px] font-semibold ${message.length >= 240 ? 'text-rose-500 font-bold' : 'text-purple-900/40'}`}>
                             {message.length} / 250 characters
                           </span>
                         </div>
                         <textarea
+                          id="message-input"
+                          name="message"
                           placeholder="Write something sweet and thoughtful..."
                           value={message}
                           onChange={(e) => setMessage(e.target.value.substring(0, 250))}

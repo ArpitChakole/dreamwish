@@ -52,7 +52,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
       angle = -spread / 2 + (spread / (total - 1)) * index;
     }
 
-    const baseRadius = 215;
+    const baseRadius = 240;
     const staggeredOffset = (index % 2 === 0 ? 25 : -25) + (index % 3 === 0 ? 10 : -10);
     const radius = baseRadius + staggeredOffset;
 
@@ -60,7 +60,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
     const bloomX = wrapX + radius * Math.sin(rad);
     const bloomY = wrapY - radius * Math.cos(rad);
 
-    const scale = 0.85 + (index % 4) * 0.05;
+    const scale = 1.15 + (index % 4) * 0.08;
     const bloomRotation = angle + ((index % 3) - 1) * 12;
 
     return {
@@ -242,7 +242,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
 
         {/* COL 1: The Floral Arrangement (6 cols) */}
         <div className="col-span-12 md:col-span-6 w-full flex flex-col items-center">
-          <div className="relative w-full max-w-[200px] xs:max-w-[240px] sm:max-w-[280px] md:max-w-full aspect-[4/5]">
+          <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[380px] md:max-w-full aspect-[4/5]">
             <svg
               viewBox="0 0 400 500"
               className="w-full h-full drop-shadow-[0_8px_20px_rgba(92,72,100,0.08)] animate-sway"
