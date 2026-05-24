@@ -387,8 +387,8 @@ function App() {
                 <svg className="w-8 h-8 drop-shadow-xs" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <linearGradient id="logo-grad-rec" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#be123c" />
-                      <stop offset="100%" stopColor="#fda4af" />
+                      <stop offset="0%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#c084fc" />
                     </linearGradient>
                   </defs>
                   <rect x="4" y="4" width="92" height="92" rx="28" fill="url(#logo-grad-rec)" />
@@ -439,8 +439,8 @@ function App() {
               <svg className="w-9 h-9 drop-shadow-xs" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="logo-grad-cre" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#be123c" />
-                    <stop offset="100%" stopColor="#fda4af" />
+                    <stop offset="0%" stopColor="#7c3aed" />
+                    <stop offset="100%" stopColor="#c084fc" />
                   </linearGradient>
                 </defs>
                 <rect x="4" y="4" width="92" height="92" rx="28" fill="url(#logo-grad-cre)" />
@@ -467,7 +467,7 @@ function App() {
                   onClick={() => setShowHistory(!showHistory)}
                   className="flex items-center gap-1.5 text-xs text-slate-800 font-semibold bg-white border border-stone-200/80 px-3 py-1.5 rounded-full shadow-2xs hover:bg-stone-50 cursor-pointer active:scale-95"
                 >
-                  <History size={13} className="text-rose-600" />
+                  <History size={13} className="text-purple-600" />
                   <span>My Creations ({savedCards.length})</span>
                 </button>
               )}
@@ -482,13 +482,13 @@ function App() {
                 <div className="sm:hidden flex flex-col gap-2">
                   <div className="text-xs text-slate-800 font-bold uppercase tracking-wider flex justify-between items-center px-1">
                     <span>Step {step} of 4</span>
-                    <span className="text-rose-700">
+                    <span className="text-purple-700">
                       {['Choose Theme', 'Write Message', 'Assemble Bouquet', 'Select Music'][step - 1]}
                     </span>
                   </div>
                   <div className="w-full h-1.5 bg-stone-200/60 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-rose-700 transition-all duration-300"
+                      className="h-full bg-purple-700 transition-all duration-300"
                       style={{ width: `${(step / 4) * 100}%` }}
                     />
                   </div>
@@ -500,7 +500,7 @@ function App() {
                     {/* Connecting bar */}
                     <div className="absolute left-0 right-0 h-[3px] bg-stone-200/60 -z-10 rounded-full" />
                     <div 
-                      className="absolute left-0 h-[3px] bg-rose-600 -z-10 transition-all duration-300 rounded-full"
+                      className="absolute left-0 h-[3px] bg-purple-600 -z-10 transition-all duration-300 rounded-full"
                       style={{ width: `${((step - 1) / 3) * 100}%` }}
                     />
 
@@ -512,15 +512,15 @@ function App() {
                         <div key={name} className="flex flex-col items-center">
                           <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
                             current 
-                              ? 'bg-rose-700 border-rose-700 text-white shadow-md ring-4 ring-rose-100 scale-105' 
+                              ? 'bg-purple-700 border-purple-700 text-white shadow-md ring-4 ring-purple-100 scale-105' 
                               : active 
-                                ? 'bg-rose-50 border-rose-400 text-rose-700' 
+                                ? 'bg-purple-50 border-purple-300 text-purple-700' 
                                 : 'bg-white border-stone-200 text-stone-400'
                           }`}>
                             {i + 1}
                           </div>
                           <span className={`text-[11px] font-bold mt-2 uppercase tracking-widest ${
-                            current ? 'text-rose-700 font-extrabold' : active ? 'text-slate-800/60' : 'text-stone-400'
+                            current ? 'text-purple-700 font-extrabold' : active ? 'text-slate-800/60' : 'text-stone-400'
                           }`}>
                             {name}
                           </span>
@@ -570,11 +570,11 @@ function App() {
                                     onClick={() => handleSelectOccasion(occ.id)}
                                     className={`p-2.5 rounded-xl border text-center flex flex-col justify-center items-center h-20 transition-all cursor-pointer active-press-scale ${
                                       occasion === occ.id
-                                        ? 'bg-rose-700 border-transparent text-white shadow-md scale-[1.03]'
-                                        : 'bg-white border-stone-200/50 hover:bg-stone-50 hover:border-rose-200 hover:shadow-2xs text-slate-800'
+                                        ? 'bg-purple-700 border-transparent text-white shadow-md scale-[1.03]'
+                                        : 'bg-white border-stone-200/50 hover:bg-stone-50 hover:border-purple-200 hover:shadow-2xs text-slate-800'
                                     }`}
                                   >
-                                    <DynamicIcon name={occ.iconName} className={occasion === occ.id ? 'text-white mb-1.5' : 'text-rose-700 mb-1.5'} size={20} />
+                                    <DynamicIcon name={occ.iconName} className={occasion === occ.id ? 'text-white mb-1.5' : 'text-purple-700 mb-1.5'} size={20} />
                                     <div className={`text-xs font-bold leading-tight ${occasion === occ.id ? 'text-white' : 'text-slate-800'}`}>
                                       {occ.name}
                                     </div>
@@ -595,7 +595,7 @@ function App() {
                                     placeholder="e.g. Mother's Day, Retirement"
                                     value={customOccasionName}
                                     onChange={(e) => setCustomOccasionName(e.target.value.substring(0, 30))}
-                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-rose-450 focus:bg-white transition-all font-semibold"
+                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-semibold"
                                   />
                                 </motion.div>
                               )}
@@ -608,7 +608,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-rose-700 hover:bg-rose-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -652,7 +652,7 @@ function App() {
                                     value={recipient}
                                     onChange={(e) => setRecipient(e.target.value)}
                                     maxLength={25}
-                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-rose-450 focus:bg-white transition-all font-semibold"
+                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-semibold"
                                   />
                                 </div>
                                 <div className="space-y-1">
@@ -665,7 +665,7 @@ function App() {
                                     value={sender}
                                     onChange={(e) => setSender(e.target.value)}
                                     maxLength={25}
-                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-rose-450 focus:bg-white transition-all font-semibold"
+                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-semibold"
                                   />
                                 </div>
                               </div>
@@ -674,7 +674,7 @@ function App() {
                               <div className="space-y-1 relative pb-10">
                                 <div className="flex justify-between items-center mb-1">
                                   <label htmlFor="message-input" className="text-[10px] uppercase tracking-wider text-slate-800 font-bold">Greeting Message</label>
-                                  <span className={`text-[9px] font-semibold ${message.length >= 240 ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
+                                  <span className={`text-[9px] font-semibold ${message.length >= 240 ? 'text-purple-600 font-bold' : 'text-slate-400'}`}>
                                     {message.length} / 250
                                   </span>
                                 </div>
@@ -685,7 +685,7 @@ function App() {
                                   value={message}
                                   onChange={(e) => setMessage(e.target.value.substring(0, 250))}
                                   rows={3}
-                                  className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl p-3 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-rose-450 focus:bg-white transition-all font-medium resize-none leading-relaxed"
+                                  className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl p-3 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-medium resize-none leading-relaxed"
                                 />
                                 
                                 {/* AI suggest message generator badge */}
@@ -693,7 +693,7 @@ function App() {
                                   <button
                                     onClick={handleAiSuggestion}
                                     disabled={isAiLoading}
-                                    className="flex items-center gap-1.5 text-xs font-bold bg-rose-700 text-white px-3.5 rounded-xl shadow-xs hover:bg-rose-800 active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
+                                    className="flex items-center gap-1.5 text-xs font-bold bg-purple-700 text-white px-3.5 rounded-xl shadow-xs hover:bg-purple-800 active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
                                   >
                                     <Sparkles size={11} className={isAiLoading ? 'animate-spin' : ''} />
                                     <span>{isAiLoading ? 'Writing...' : 'AI Assist'}</span>
@@ -719,8 +719,8 @@ function App() {
                                       onClick={() => setMessage(msg)}
                                       className={`w-full text-left p-2 rounded-xl border text-[11px] leading-relaxed transition-all cursor-pointer active-press-scale ${
                                         message === msg
-                                          ? 'border-rose-350 bg-rose-50/40 text-rose-900 font-medium'
-                                          : 'border-stone-100 bg-slate-50/30 text-slate-700 hover:bg-white hover:border-rose-200'
+                                          ? 'border-purple-300 bg-purple-50/40 text-purple-900 font-medium'
+                                          : 'border-stone-100 bg-slate-50/30 text-slate-700 hover:bg-white hover:border-purple-200'
                                       }`}
                                     >
                                       "{msg}"
@@ -747,7 +747,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-rose-700 hover:bg-rose-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -802,7 +802,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-rose-700 hover:bg-rose-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -847,12 +847,12 @@ function App() {
                                   onClick={() => handlePreviewTrack('none')}
                                   className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer active-press-scale ${
                                     music === 'none'
-                                      ? 'bg-white border-rose-500 ring-2 ring-rose-100/50 shadow-xs font-bold scale-[1.01]'
-                                      : 'bg-slate-50/50 border-stone-200/50 hover:bg-white hover:border-rose-200'
+                                      ? 'bg-white border-purple-500 ring-2 ring-purple-100/50 shadow-xs font-bold scale-[1.01]'
+                                      : 'bg-slate-50/50 border-stone-200/50 hover:bg-white hover:border-purple-200'
                                   }`}
                                 >
                                   <div className="flex items-center gap-3">
-                                    <Icons.VolumeX size={18} className={music === 'none' ? 'text-rose-700' : 'text-slate-400'} strokeWidth={1.5} />
+                                    <Icons.VolumeX size={18} className={music === 'none' ? 'text-purple-700' : 'text-slate-400'} strokeWidth={1.5} />
                                     <div>
                                       <div className="text-xs text-slate-800 font-bold">No Music</div>
                                       <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold block mt-0.5">
@@ -860,7 +860,7 @@ function App() {
                                       </span>
                                     </div>
                                   </div>
-                                  <span className="text-[10px] text-rose-700 font-bold">{music === 'none' ? 'Active' : 'Select'}</span>
+                                  <span className="text-[10px] text-purple-700 font-bold">{music === 'none' ? 'Active' : 'Select'}</span>
                                 </motion.button>
 
                                 {/* Royalty free audio options */}
@@ -871,12 +871,12 @@ function App() {
                                     onClick={() => handlePreviewTrack(track.id)}
                                     className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer active-press-scale ${
                                       music === track.id
-                                        ? 'bg-white border-rose-500 ring-2 ring-rose-100/50 shadow-xs font-bold scale-[1.01]'
-                                        : 'bg-slate-50/50 border-stone-200/50 hover:bg-white hover:border-rose-200'
+                                        ? 'bg-white border-purple-500 ring-2 ring-purple-100/50 shadow-xs font-bold scale-[1.01]'
+                                        : 'bg-slate-50/50 border-stone-200/50 hover:bg-white hover:border-purple-200'
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
-                                      <DynamicIcon name={track.iconName} className={music === track.id ? 'text-rose-750' : 'text-slate-500'} size={18} />
+                                      <DynamicIcon name={track.iconName} className={music === track.id ? 'text-purple-750' : 'text-slate-500'} size={18} />
                                       <div>
                                         <div className="text-xs text-slate-800 font-bold">{track.name}</div>
                                         <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold block mt-0.5">
@@ -886,9 +886,9 @@ function App() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       {music === track.id && isMusicPlaying && (
-                                        <Volume2 size={12} className="text-rose-600 animate-bounce" />
+                                        <Volume2 size={12} className="text-purple-600 animate-bounce" />
                                       )}
-                                      <span className="text-[10px] text-rose-700 font-bold">
+                                      <span className="text-[10px] text-purple-700 font-bold">
                                         {music === track.id ? 'Active' : 'Select'}
                                       </span>
                                     </div>
@@ -919,7 +919,7 @@ function App() {
                             </button>
                             <button
                               onClick={handleNextStep}
-                              className="group flex items-center justify-between gap-4 bg-rose-700 hover:bg-rose-800 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
+                              className="group flex items-center justify-between gap-4 bg-purple-700 hover:bg-purple-800 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
                             >
                               <span>Preview & Share</span>
                               <span className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
@@ -936,7 +936,7 @@ function App() {
                   <div className="lg:col-span-7 w-full lg:sticky lg:top-6 space-y-3 no-print">
                     <div className="flex items-center justify-between text-xs text-slate-550 font-bold uppercase tracking-wider px-2">
                       <span>Live Card Preview</span>
-                      <span className="text-[10px] text-rose-700 font-extrabold flex items-center gap-1">
+                      <span className="text-[10px] text-purple-700 font-extrabold flex items-center gap-1">
                         <Icons.Sparkles size={10} className="animate-pulse" />
                         <span>Updates In Real-time</span>
                       </span>
@@ -970,7 +970,7 @@ function App() {
                       <div className="lg:col-span-7 flex flex-col items-center space-y-4">
                         <div className="w-full flex items-center justify-between text-xs text-slate-550 font-bold uppercase tracking-wider px-2 no-print">
                           <span>Card Presentation Preview</span>
-                          <span className="text-[10px] text-rose-750 font-bold flex items-center gap-1">
+                          <span className="text-[10px] text-purple-750 font-bold flex items-center gap-1">
                             <Icons.Sparkles size={10} />
                             <span>Ready to Share</span>
                           </span>
@@ -991,7 +991,7 @@ function App() {
                         <div className="flex items-center gap-2 text-xs font-bold text-slate-650">
                           <button
                             onClick={handlePrevStep}
-                            className="flex items-center gap-1 hover:text-rose-700 text-slate-700 transition-all cursor-pointer bg-white px-3.5 py-1.5 rounded-full border border-stone-200 active-press-scale"
+                            className="flex items-center gap-1 hover:text-purple-700 text-slate-700 transition-all cursor-pointer bg-white px-3.5 py-1.5 rounded-full border border-stone-200 active-press-scale"
                           >
                             <ArrowLeft size={12} />
                             <span>Back to Editor</span>
@@ -1031,7 +1031,7 @@ function App() {
                   <div className="space-y-6 overflow-hidden flex flex-col flex-1">
                     <div className="flex items-center justify-between border-b border-stone-200 pb-3">
                       <h3 className="font-serif text-lg font-bold text-slate-900 flex items-center gap-1.5">
-                        <History size={16} className="text-rose-600" />
+                        <History size={16} className="text-purple-600" />
                         <span>My Sent History</span>
                       </h3>
                       <button 
@@ -1056,12 +1056,12 @@ function App() {
                         return (
                           <div 
                             key={card.id}
-                            className="p-3.5 rounded-2xl border border-stone-100 hover:border-rose-200 bg-stone-50 hover:bg-white transition-all shadow-2xs space-y-3"
+                            className="p-3.5 rounded-2xl border border-stone-100 hover:border-purple-200 bg-stone-50 hover:bg-white transition-all shadow-2xs space-y-3"
                           >
                             <div className="flex justify-between items-start">
                               <span className="text-[10px] font-semibold text-stone-400">{dateStr}</span>
-                              <div className="flex items-center gap-1.5 text-xs bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full font-bold">
-                                {config && <DynamicIcon name={config.iconName} className="text-rose-650" size={12} />}
+                              <div className="flex items-center gap-1.5 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold">
+                                {config && <DynamicIcon name={config.iconName} className="text-purple-650" size={12} />}
                                 <span>{(card.state.occasion === 'custom' && card.state.customOccasionName) ? card.state.customOccasionName : config?.name}</span>
                               </div>
                             </div>
@@ -1080,7 +1080,7 @@ function App() {
 
                             <button
                               onClick={() => handleLoadSavedCard(card.state)}
-                              className="w-full py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
+                              className="w-full py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
                             >
                               Load & Edit Card
                             </button>
@@ -1098,7 +1098,7 @@ function App() {
                           localStorage.removeItem('dreamwish_history');
                         }
                       }}
-                      className="w-full text-center text-[10px] font-bold text-rose-500 hover:bg-rose-50 py-2 rounded-xl transition-colors cursor-pointer"
+                      className="w-full text-center text-[10px] font-bold text-purple-500 hover:bg-purple-50 py-2 rounded-xl transition-colors cursor-pointer"
                     >
                       Clear All History
                     </button>
@@ -1119,7 +1119,7 @@ function App() {
       <footer
         className="w-full py-4 text-center text-xs text-slate-500 font-semibold border-t border-stone-200/20 bg-stone-50/10 no-print flex items-center justify-center gap-1">
         <span>Made with love</span>
-        <Icons.Heart size={12} className="text-rose-600 fill-rose-600 inline" strokeWidth={2.5} />
+        <Icons.Heart size={12} className="text-purple-600 fill-purple-600 inline" strokeWidth={2.5} />
         <span>by Arpit</span>
       </footer>
 

@@ -26,7 +26,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
       particleCount: 150,
       spread: 80,
       origin: { y: 0.6 },
-      colors: ['#be123c', '#e11d48', '#fda4af', '#f43f5e', '#fb7185'] // Mapped rose colors
+      colors: ['#7c3aed', '#a78bfa', '#c084fc', '#8b5cf6', '#e9d5ff'] // Mapped lavender colors
     });
   }, [state]);
 
@@ -40,7 +40,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
         particleCount: 30,
         spread: 30,
         origin: { y: 0.8 },
-        colors: ['#be123c', '#e11d48', '#f43f5e']
+        colors: ['#7c3aed', '#a78bfa', '#8b5cf6']
       });
 
       setTimeout(() => setCopied(false), 2500);
@@ -92,7 +92,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
                 className={`w-full sm:w-auto flex items-center justify-center gap-1.5 h-12 px-6 rounded-xl text-xs font-bold transition-all active-press-scale cursor-pointer shrink-0 ${
                   copied
                     ? 'bg-emerald-500 text-white shadow-xs'
-                    : 'bg-rose-700 hover:bg-rose-800 text-white shadow-md'
+                    : 'bg-purple-700 hover:bg-purple-800 text-white shadow-md'
                 }`}
               >
                 {copied ? (
@@ -117,7 +117,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
               onClick={() => setShowQR(!showQR)}
               className={`w-full sm:w-1/2 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-semibold border transition-all cursor-pointer active-press-scale ${
                 showQR
-                  ? 'bg-rose-50 border-rose-200 text-rose-700 font-bold'
+                  ? 'bg-purple-50 border-purple-200 text-purple-700 font-bold'
                   : 'bg-white/80 border-stone-200/80 text-slate-800 hover:bg-white'
               }`}
             >
@@ -163,7 +163,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto flex items-center justify-between gap-4 text-xs font-bold bg-rose-700 hover:bg-rose-800 text-white pl-6 pr-3.5 py-3 rounded-full shadow-lg transition-all active-press-scale text-center cursor-pointer group"
+          className="w-full sm:w-auto flex items-center justify-between gap-4 text-xs font-bold bg-purple-700 hover:bg-purple-800 text-white pl-6 pr-3.5 py-3 rounded-full shadow-lg transition-all active-press-scale text-center cursor-pointer group"
         >
           <span>Test Recipient Preview</span>
           <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center shrink-0">

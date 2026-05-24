@@ -398,7 +398,7 @@ export const GreetingCard: React.FC<GreetingCardProps> = ({
       
       {/* Visual floating gift note at the bottom */}
       <div className="relative mt-8 z-10 flex items-center gap-2 text-xs text-slate-500/60 font-semibold bg-white/40 border border-stone-200/20 py-1.5 px-4 rounded-full shadow-2xs">
-        <Icons.Gift size={12} className="text-rose-600 animate-pulse" strokeWidth={1.5} />
+        <Icons.Gift size={12} className="text-purple-600 animate-pulse" strokeWidth={1.5} />
         <span>A personalized card created with DreamWish</span>
       </div>
     </div>

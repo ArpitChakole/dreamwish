@@ -156,12 +156,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(190, 18, 60, 0.15); /* Muted Deep Rose thumb */
+  background: rgba(124, 58, 237, 0.15); /* Muted Violet thumb */
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(190, 18, 60, 0.3);
+  background: rgba(124, 58, 237, 0.3);
 }
 
 .font-cursive {
