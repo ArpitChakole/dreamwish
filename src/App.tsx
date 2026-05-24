@@ -608,7 +608,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -693,7 +693,7 @@ function App() {
                                   <button
                                     onClick={handleAiSuggestion}
                                     disabled={isAiLoading}
-                                    className="flex items-center gap-1.5 text-xs font-bold bg-purple-700 text-white px-3.5 rounded-xl shadow-xs hover:bg-purple-800 active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
+                                    className="flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white px-3.5 rounded-xl shadow-xs active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
                                   >
                                     <Sparkles size={11} className={isAiLoading ? 'animate-spin' : ''} />
                                     <span>{isAiLoading ? 'Writing...' : 'AI Assist'}</span>
@@ -747,7 +747,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -802,7 +802,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-purple-700 hover:bg-purple-800 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -919,7 +919,7 @@ function App() {
                             </button>
                             <button
                               onClick={handleNextStep}
-                              className="group flex items-center justify-between gap-4 bg-purple-700 hover:bg-purple-800 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
+                              className="group flex items-center justify-between gap-4 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
                             >
                               <span>Preview & Share</span>
                               <span className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
@@ -1080,7 +1080,7 @@ function App() {
 
                             <button
                               onClick={() => handleLoadSavedCard(card.state)}
-                              className="w-full py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
+                              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
                             >
                               Load & Edit Card
                             </button>

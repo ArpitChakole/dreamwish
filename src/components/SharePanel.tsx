@@ -92,7 +92,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
                 className={`w-full sm:w-auto flex items-center justify-center gap-1.5 h-12 px-6 rounded-xl text-xs font-bold transition-all active-press-scale cursor-pointer shrink-0 ${
                   copied
                     ? 'bg-emerald-500 text-white shadow-xs'
-                    : 'bg-purple-700 hover:bg-purple-800 text-white shadow-md'
+                    : 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white shadow-md'
                 }`}
               >
                 {copied ? (
@@ -163,7 +163,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({ state, onReset }) => {
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto flex items-center justify-between gap-4 text-xs font-bold bg-purple-700 hover:bg-purple-800 text-white pl-6 pr-3.5 py-3 rounded-full shadow-lg transition-all active-press-scale text-center cursor-pointer group"
+          className="w-full sm:w-auto flex items-center justify-between gap-4 text-xs font-bold bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white pl-6 pr-3.5 py-3 rounded-full shadow-lg transition-all active-press-scale text-center cursor-pointer group"
         >
           <span>Test Recipient Preview</span>
           <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center shrink-0">
