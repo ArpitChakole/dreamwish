@@ -661,7 +661,7 @@ function App() {
                                     id="sender-input"
                                     name="sender"
                                     type="text"
-                                    placeholder="e.g. Rutuja"
+                                    placeholder="e.g. Arpita"
                                     value={sender}
                                     onChange={(e) => setSender(e.target.value)}
                                     maxLength={25}
