@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles } from 'lucide-react';
+import * as Icons from 'lucide-react';
 
 interface EnvelopeProps {
   sender: string;
   recipient: string;
-  occasionEmoji: string;
   onOpen: () => void;
   children: React.ReactNode; // The actual Greeting Card content
 }
@@ -13,7 +12,6 @@ interface EnvelopeProps {
 export const Envelope: React.FC<EnvelopeProps> = ({
   sender,
   recipient,
-  occasionEmoji,
   onOpen,
   children
 }) => {
@@ -36,8 +34,8 @@ export const Envelope: React.FC<EnvelopeProps> = ({
         setIsCardExtracted(true);
         // Trigger parent callback (e.g. play music)
         onOpen();
-      }, 800);
-    }, 600);
+      }, 550);
+    }, 350);
   };
 
   return (
@@ -57,59 +55,57 @@ export const Envelope: React.FC<EnvelopeProps> = ({
             {/* Soft shadow underneath the envelope */}
             <div className="absolute -bottom-6 left-1/10 right-1/10 h-6 bg-purple-950/5 blur-xl rounded-full transition-all group-hover:bg-purple-950/10 group-hover:scale-x-105" />
 
-            <div className="relative w-full h-full rounded-2xl overflow-hidden glass-card shadow-2xl border border-white/40 flex flex-col justify-between" style={{ background: 'rgba(255, 255, 255, 0.22)', backdropFilter: 'blur(4px)' }}>
+            <div className="relative w-full h-full rounded-3xl overflow-hidden flex flex-col justify-between" style={{ background: '#f4ede4', border: '1.5px solid #d9c5b2', boxShadow: '0 30px 70px -15px rgba(90, 75, 65, 0.35), inset 0 1px 4px rgba(255, 255, 255, 0.95)' }}>
               
-              {/* Envelope Top Flap (translucent glass flap) */}
+              {/* Envelope Top Flap (premium textured paper flap) */}
               <motion.div
-                className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/60 to-white/30 border-b border-white/20 origin-top z-30 backdrop-blur-xs"
-                style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
+                className="absolute top-0 left-0 w-full h-1/2 origin-top z-30"
+                style={{ 
+                  clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)',
+                  background: 'linear-gradient(to bottom, #f3e6dd, #decbbf)',
+                  borderBottom: '2px solid #c8b3a0',
+                  boxShadow: '0 6px 15px rgba(90, 75, 65, 0.15)'
+                }}
                 animate={isFlapOpened ? { 
                   rotateX: 180, 
                   y: -1,
                   zIndex: 5,
-                  filter: 'brightness(0.95)',
-                  boxShadow: '0 5px 15px rgba(0,0,0,0.05)'
+                  filter: 'brightness(0.92)',
+                  boxShadow: '0 5px 15px rgba(0,0,0,0.08)'
                 } : { 
                   rotateX: 0 
                 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+                transition={{ type: "spring", duration: 0.55, bounce: 0.1 }}
               />
 
-              {/* Envelope Body / Pocket (translucent glass pocket) */}
+              {/* Envelope Body / Pocket */}
               <div 
-                className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/40 to-transparent z-10"
+                className="absolute inset-0 bg-gradient-to-t from-[#e8d2c4] via-[#faf4f0] to-[#e8d2c4] z-10"
                 style={{ 
                   clipPath: 'polygon(0% 40%, 100% 40%, 100% 100%, 0% 100%)',
-                  boxShadow: 'inset 0 10px 30px rgba(0,0,0,0.02)'
+                  borderTop: '1.5px solid #d4beaf',
+                  boxShadow: 'inset 0 10px 40px rgba(90, 75, 65, 0.08), 0 -4px 16px rgba(90, 75, 65, 0.03)'
                 }}
               />
               
-              {/* Left and Right inner folds for realistic translucent look */}
+              {/* Left and Right inner folds for realistic layered paper depth */}
               <div 
-                className="absolute inset-0 bg-white/15 z-10"
-                style={{ clipPath: 'polygon(0% 0%, 35% 50%, 0% 100%)' }}
+                className="absolute inset-0 bg-gradient-to-r from-[#d7bda8] to-[#ecdacf]/10 z-10"
+                style={{ clipPath: 'polygon(0% 0%, 38% 50%, 0% 100%)', opacity: 0.9 }}
               />
               <div 
-                className="absolute inset-0 bg-white/15 z-10"
-                style={{ clipPath: 'polygon(100% 0%, 65% 50%, 100% 100%)' }}
+                className="absolute inset-0 bg-gradient-to-l from-[#d7bda8] to-[#ecdacf]/10 z-10"
+                style={{ clipPath: 'polygon(100% 0%, 62% 50%, 100% 100%)', opacity: 0.9 }}
               />
 
               {/* Recipient Address Text - Top portion (no overlap with stamp) */}
               <div className="absolute inset-x-0 top-0 z-20 flex flex-col items-center p-6 pt-10 pointer-events-none text-center">
-                <span className="text-[10px] uppercase tracking-[0.25em] text-stone-400 font-semibold mb-1">
+                <span className="text-[9px] xs:text-[10px] uppercase tracking-[0.3em] text-[#5a3e36] font-bold mb-1.5">
                   Specially Created For
                 </span>
-                <h3 className="font-serif text-2xl italic text-purple-950 font-bold drop-shadow-sm">
+                <h3 className="font-serif text-2xl xs:text-3xl italic text-[#2d140e] font-extrabold drop-shadow-[0_1px_2px_rgba(255,255,255,0.75)]">
                   {recipient}
                 </h3>
-              </div>
-
-              {/* Envelope Action Prompt - Bottom portion (no overlap with stamp) */}
-              <div className="absolute inset-x-0 bottom-12 z-20 flex flex-col items-center pointer-events-none text-center">
-                <div className="flex items-center gap-1.5 text-xs text-stone-600 font-bold bg-white/70 px-4 py-1.5 rounded-full border border-stone-200/20 backdrop-blur-xs shadow-2xs">
-                  <span>Click here or open here {occasionEmoji}</span>
-                  <Sparkles size={12} className="text-gold-500 animate-pulse-slow" />
-                </div>
               </div>
 
               {/* Gold Wax Seal (animates and breaks on click) */}
@@ -121,10 +117,10 @@ export const Envelope: React.FC<EnvelopeProps> = ({
                   opacity: 0,
                   pointerEvents: 'none'
                 } : {}}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ type: "spring", duration: 0.45, bounce: 0.05 }}
               >
                 <motion.div
-                  className="relative w-18 h-18 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95"
+                  className="relative w-18 h-18 cursor-pointer transition-all duration-300 hover:scale-105 active-press-scale"
                   animate={isSealBroken ? {
                     scale: [1, 1.15, 0.8],
                     rotate: [0, -8, 8, 0],
@@ -133,16 +129,16 @@ export const Envelope: React.FC<EnvelopeProps> = ({
                   transition={{ duration: 0.5 }}
                 >
                   {/* Wax Seal Ribbons - premium dual tone with V-cuts */}
-                  <div className="absolute top-12 left-[30%] w-3 h-14 bg-rose-700 origin-top rotate-[-12deg] -z-10 shadow-md border-r border-rose-800 group-hover:opacity-10 transition-opacity duration-300" 
+                  <div className="absolute top-12 left-[30%] w-3 h-14 bg-rose-700 origin-top rotate-[-12deg] -z-10 shadow-md border-r border-rose-800 transition-opacity duration-300" 
                        style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 90%, 50% 100%, 0% 90%)' }} />
-                  <div className="absolute top-12 left-[50%] w-3 h-16 bg-rose-800 origin-top rotate-[10deg] -z-10 shadow-md border-l border-rose-950 group-hover:opacity-10 transition-opacity duration-300" 
+                  <div className="absolute top-12 left-[50%] w-3 h-16 bg-rose-800 origin-top rotate-[10deg] -z-10 shadow-md border-l border-rose-950 transition-opacity duration-300" 
                        style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 90%, 50% 100%, 0% 90%)' }} />
                   {/* Gold thread overlay */}
-                  <div className="absolute top-12 left-[44%] w-1.5 h-15 bg-amber-400 origin-top rotate-[-2deg] -z-10 opacity-70 group-hover:opacity-10 transition-opacity duration-300"
+                  <div className="absolute top-12 left-[44%] w-1.5 h-15 bg-amber-400 origin-top rotate-[-2deg] -z-10 opacity-70 transition-opacity duration-300"
                        style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }} />
 
                   {/* Organic irregular wax outer pool */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#f59e0b] via-[#d97706] to-[#b45309] shadow-xl border border-[#fbbf24]/30 group-hover:opacity-15 transition-opacity duration-300"
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#f59e0b] via-[#d97706] to-[#b45309] shadow-xl border border-[#fbbf24]/30 transition-opacity duration-300"
                        style={{ 
                          borderRadius: '53% 47% 52% 48% / 47% 55% 45% 53%',
                          boxShadow: 'inset 1.5px 1.5px 3px rgba(255,255,255,0.25), inset -2px -2px 4px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.15)'
@@ -150,7 +146,7 @@ export const Envelope: React.FC<EnvelopeProps> = ({
                   />
 
                   {/* Secondary inner ring of melted wax buildup */}
-                  <div className="absolute inset-1.5 bg-gradient-to-br from-[#d97706] via-[#b45309] to-[#78350f] border border-[#fbbf24]/20 group-hover:opacity-15 transition-opacity duration-300"
+                  <div className="absolute inset-1.5 bg-gradient-to-br from-[#d97706] via-[#b45309] to-[#78350f] border border-[#fbbf24]/25 transition-opacity duration-300"
                        style={{ 
                          borderRadius: '48% 52% 46% 54% / 51% 47% 53% 49%',
                          boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.2), inset -1px -1px 2px rgba(0,0,0,0.45)'
@@ -158,39 +154,37 @@ export const Envelope: React.FC<EnvelopeProps> = ({
                   />
 
                   {/* Flat central die press area */}
-                  <div className="absolute inset-3.5 bg-gradient-to-tr from-[#78350f] via-[#b45309] to-[#fbbf24] flex items-center justify-center border border-[#78350f]/30 shadow-inner group-hover:opacity-10 transition-opacity duration-300"
+                  <div className="absolute inset-3.5 bg-gradient-to-tr from-[#78350f] via-[#b45309] to-[#fbbf24] flex items-center justify-center border border-[#78350f]/35 shadow-inner transition-opacity duration-300"
                        style={{ borderRadius: '50%' }}
                   >
-                    {/* Concentric engraved thin circle */}
-                    <div className="absolute inset-1 rounded-full border border-[#78350f]/20 opacity-50 pointer-events-none" />
-
                     {/* Engraved heart icon with drop shadow letterpress effect */}
                     <div className="relative transform translate-y-[-0.5px]">
-                      <Heart 
+                      <Icons.Heart 
                         size={18} 
                         fill="#78350f" 
-                        className="text-[#b45309] filter drop-shadow-[0.5px_0.5px_0.5px_rgba(255,255,255,0.4)] drop-shadow-[-0.5px_-0.5px_0.5px_rgba(0,0,0,0.45)] group-hover:opacity-10 transition-opacity duration-300" 
+                        className="text-[#b45309] filter drop-shadow-[0.5px_0.5px_0.5px_rgba(255,255,255,0.4)] drop-shadow-[-0.5px_-0.5px_0.5px_rgba(0,0,0,0.45)] transition-opacity duration-300" 
+                        strokeWidth={1.5}
                       />
                     </div>
                   </div>
 
                   {/* Sparkles micro-animation on hover */}
                   <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    <Sparkles size={12} className="text-amber-200 absolute top-1 left-2 animate-pulse" />
-                    <Sparkles size={10} className="text-amber-100 absolute bottom-2 right-1.5 animate-pulse delay-75" />
+                    <Icons.Sparkles size={12} className="text-amber-250 absolute top-1 left-2 animate-pulse" />
+                    <Icons.Sparkles size={10} className="text-amber-100 absolute bottom-2 right-1.5 animate-pulse delay-75" />
                   </div>
 
                   {/* Click/Open Hint Badge */}
-                  <div className="absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-extrabold uppercase tracking-widest text-amber-900 bg-amber-100/95 border border-amber-200/50 px-3 py-1.5 rounded-full shadow-xs pointer-events-none animate-bounce z-50 transition-opacity duration-300">
-                    Click here or open here 👆
+                  <div className="absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] xs:text-[10px] font-black uppercase tracking-widest text-[#2d140e] bg-white border border-[#c5b09f] px-5 py-2 rounded-full shadow-lg pointer-events-none animate-bounce z-50 transition-opacity duration-300">
+                    Open Here
                   </div>
                 </motion.div>
               </motion.div>
 
               {/* Sender stamp in the corner */}
               <div className="absolute bottom-4 right-6 text-right z-20 pointer-events-none">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-stone-400 block mb-0.5">With Love,</span>
-                <span className="font-serif text-sm italic text-stone-600 font-semibold">{sender}</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] text-[#5a3e36] block mb-0.5 font-bold">With Love,</span>
+                <span className="font-serif text-sm italic text-[#2d140e] font-extrabold">{sender}</span>
               </div>
             </div>
 

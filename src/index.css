@@ -50,12 +50,44 @@
 
 /* Base body and font setups */
 :root {
-  font-size: 15px;
+  font-size: 14px;
+  
+  /* Snappy custom cubic-bezier easings from Emil's guidelines */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 15px;
+  }
 }
 
 @media (min-width: 1024px) {
   :root {
-    font-size: 20px;
+    font-size: 16px;
+  }
+}
+
+/* Global button and pressable feedback details */
+button, 
+[role="button"],
+.active-press-scale {
+  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease, border-color 150ms ease, opacity 150ms ease;
+}
+
+button:not(:disabled):active, 
+[role="button"]:not([disabled]):active,
+.active-press-scale:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Hover gating for touch devices to prevent sticky hover states */
+@media (hover: hover) and (pointer: fine) {
+  button:hover:not(:disabled),
+  [role="button"]:hover:not([disabled]) {
+    filter: brightness(1.03);
   }
 }
 
@@ -64,38 +96,53 @@ input, select, textarea {
 }
 
 body {
-  background: linear-gradient(135deg, #fefeff 0%, #ffffff 50%, #faf9ff 100%);
-  color: #3f3b47;
+  background: #fcfbfa; /* Soft structural warm cream/off-white */
+  color: #332f35;
   font-family: var(--font-sans);
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Glassmorphism utility card */
-.glass-panel {
+/* Double-Bezel Component Enclosure System */
+.double-bezel-outer {
+  background: rgba(244, 242, 240, 0.55);
+  border: 1px solid rgba(220, 215, 210, 0.5);
+  padding: 6px;
+  border-radius: 2rem;
+  transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.double-bezel-inner {
   background: #ffffff;
-  backdrop-filter: blur(16px) saturate(120%);
-  -webkit-backdrop-filter: blur(16px) saturate(120%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: calc(2rem - 6px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    0 15px 35px -10px rgba(90, 80, 70, 0.04),
+    0 1px 2px rgba(90, 80, 70, 0.01);
 }
 
-.glass-panel-dark {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.glass-card {
-  background: #ffffff;
+/* Liquid Glass with Refraction border/shadow */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.03), 
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    0 1px 3px rgba(0, 0, 0, 0.02);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* Procedural Film Grain Overlay (GPU safe, fixed layer) */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* Elegant custom scrollbar */
@@ -109,26 +156,23 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(124, 58, 237, 0.15); /* Muted Violet thumb */
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.5);
+  background: rgba(124, 58, 237, 0.3);
 }
 
-/* Script writing typography animation */
 .font-cursive {
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
 }
 
-/* Card details card styling */
 .card-content-shadow {
-  box-shadow: 0 10px 40px -10px rgba(107, 78, 113, 0.15);
+  box-shadow: 0 25px 60px -20px rgba(100, 80, 80, 0.08);
 }
 
-/* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -147,15 +191,12 @@ body {
     padding: 0 !important;
   }
   
-  /* Hide creator UI, background elements, and share controls during printing */
   .no-print,
   button,
-  .z-50, /* Hide music controls */
-  .gift-note-badge { /* Hide footer watermark */
+  .z-50 {
     display: none !important;
   }
   
-  /* Center and scale card for printing */
   .card-content-shadow {
     box-shadow: none !important;
     border: 1px solid #e2e8f0 !important;

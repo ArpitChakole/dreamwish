@@ -5,6 +5,7 @@ import {
   History, Volume2, Info
 } from 'lucide-react';
 import * as Icons from 'lucide-react';
+import * as Icons from 'lucide-react';
 import type { CardState, Occasion, FlowerSelection } from './types';
 import { OCCASIONS, AUDIO_TRACKS } from './types';
 import { deserializeCardState } from './utils/sharing';
@@ -12,6 +13,11 @@ import { Envelope } from './components/Envelope';
 import { GreetingCard } from './components/GreetingCard';
 import { BouquetBuilder } from './components/BouquetBuilder';
 import { SharePanel } from './components/SharePanel';
+
+const DynamicIcon = ({ name, className, size = 20, strokeWidth = 1.5 }: { name: string; className?: string; size?: number; strokeWidth?: number }) => {
+  const IconComponent = (Icons as any)[name];
+  return IconComponent ? <IconComponent className={className} size={size} strokeWidth={strokeWidth} /> : <Icons.Sparkles className={className} size={size} strokeWidth={strokeWidth} />;
+};
 
 const DynamicIcon = ({ name, className, size = 20, strokeWidth = 1.5 }: { name: string; className?: string; size?: number; strokeWidth?: number }) => {
   const IconComponent = (Icons as any)[name];
@@ -101,25 +107,33 @@ const staggerItem = {
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 20
+      type: "spring" as const,
+      duration: 0.4,
+      bounce: 0.1
     }
   }
 };
 
-export default function App() {
-  // State Management
-  const [step, setStep] = useState(1); // 1: Occasions, 2: Message, 3: Bouquet, 4: Music, 5: Preview
+function App() {
+  // Navigation & Router
+  const [recipientState, setRecipientState] = useState<CardState | null>(null);
+  const [isRecipientFlow, setIsRecipientFlow] = useState(false);
+  const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
+
+  // Wizard state (for creator)
+  const [step, setStep] = useState(1);
   const [occasion, setOccasion] = useState<Occasion>('birthday');
   const [customOccasionName, setCustomOccasionName] = useState('');
   const [sender, setSender] = useState('');
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
   const [selectedFlowers, setSelectedFlowers] = useState<FlowerSelection[]>([]);
-  const [wrapStyle, setWrapStyle] = useState('kraft');
-  const [cardBg, setCardBg] = useState('white');
-  const [music, setMusic] = useState('none');
+  const [wrapStyle, setWrapStyle] = useState<'kraft' | 'blush' | 'mesh' | 'gold'>('kraft');
+  const [music, setMusic] = useState<string>('none');
+  const [cardBg, setCardBg] = useState<'white' | 'silver' | 'slate' | 'blush' | 'gold'>('white');
+  const [customOccasionName, setCustomOccasionName] = useState('');
+
+  // Interactive UI elements
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -267,12 +281,16 @@ export default function App() {
     setMusic(saved.music);
     setCardBg(saved.cardBg || 'white');
     setCustomOccasionName(saved.customOccasionName || '');
+    setCustomOccasionName(saved.customOccasionName || '');
     setStep(5); // Go straight to preview
     setShowHistory(false);
   };
 
   // Check form step validation
   const isStepValid = () => {
+    if (step === 1) {
+      return occasion !== 'custom' || customOccasionName.trim().length > 0;
+    }
     if (step === 1) {
       return occasion !== 'custom' || customOccasionName.trim().length > 0;
     }
@@ -296,6 +314,8 @@ export default function App() {
     flowers: selectedFlowers,
     music,
     wrapStyle,
+    cardBg,
+    customOccasionName: customOccasionName.trim()
     cardBg,
     customOccasionName: customOccasionName.trim()
   });
@@ -331,6 +351,7 @@ export default function App() {
     setMusic('none');
     setCardBg('white');
     setCustomOccasionName('');
+    setCustomOccasionName('');
     if (audioRef.current) {
       audioRef.current.pause();
       setIsMusicPlaying(false);
@@ -353,13 +374,19 @@ export default function App() {
       {/* RECIPIENT MODE VIEW */}
       {isRecipientFlow && recipientState && (
         <main className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 bg-gradient-to-br from-[#faf8f5] via-[#f3e6dd]/40 to-[#ebd7cb]/20 w-full min-h-screen relative overflow-hidden">
+        <main className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 bg-gradient-to-br from-[#faf8f5] via-[#f3e6dd]/40 to-[#ebd7cb]/20 w-full min-h-screen relative overflow-hidden">
           {!isEnvelopeOpened ? (
+            <div className="w-full text-center space-y-6 z-10">
             <div className="w-full text-center space-y-6 z-10">
               {/* Header Logo */}
               <div className="flex items-center justify-center gap-2 opacity-95">
                 <svg className="w-8 h-8 drop-shadow-xs" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div className="flex items-center justify-center gap-2 opacity-95">
+                <svg className="w-8 h-8 drop-shadow-xs" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <linearGradient id="logo-grad-rec" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#c084fc" />
                       <stop offset="0%" stopColor="#7c3aed" />
                       <stop offset="100%" stopColor="#c084fc" />
                     </linearGradient>
@@ -371,12 +398,16 @@ export default function App() {
                     <path d="M50 40 C42 30 58 30 50 40 Z" fill="none" />
                     <path d="M50 40 C60 32 60 48 50 40 Z" fill="none" />
                     <path d="M50 40 C58 50 42 50 50 40 Z" fill="none" />
+                    <path d="M50 40 C40 48 40 32 50 40 Z" fill="none" />
+                    <circle cx="50" cy="40" r="3.5" fill="white" />
                   </g>
                 </svg>
-                <h1 className="text-2xl font-serif font-bold text-slate-800 drop-shadow-xs">DreamWish</h1>
+                <span className="text-xl font-bold font-serif italic text-slate-900">DreamWish</span>
               </div>
-
-              <Envelope 
+              
+              <Envelope
+                sender={recipientState.sender}
+                recipient={recipientState.recipient}
                 onOpen={handleEnvelopeOpened}
                 recipientName={recipientState.recipient}
                 senderName={recipientState.sender}
@@ -407,47 +438,32 @@ export default function App() {
 
       {/* CREATOR MODE VIEW */}
       {!isRecipientFlow && (
-        <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 md:p-12 bg-gradient-to-br from-[#faf8f5] via-[#f3e6dd]/40 to-[#ebd7cb]/20 w-full relative overflow-hidden">
-          {/* Background Petals Animation */}
-          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-16 h-16 opacity-0 animate-petal-fall"
-                style={{
-                  animationDelay: `${i * 2}s`,
-                  left: `${(i + 1) * 25}%`,
-                  animation: `petal-fall-${(i % 3) + 1} 12s linear infinite`,
-                  animationDelay: `${i * 3}s`
-                }}
-              >
-                <svg viewBox="0 0 100 100" className="w-full h-full fill-purple-200/20">
-                  <circle cx="50" cy="50" r="40" />
-                </svg>
-              </div>
-            ))}
-          </div>
-
-          {/* Top Navigation and Preview Toggle */}
-          <div className="w-full max-w-7xl mx-auto flex items-center justify-between gap-4 mb-8 z-10">
-            <div className="flex items-center gap-2">
-              <svg className="w-7 h-7" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <>
+          {/* Header - No print */}
+          <header className="w-full py-4 px-6 bg-white/40 border-b border-stone-200/50 backdrop-blur-xs flex items-center justify-between no-print">
+            <div className="flex items-center gap-2.5">
+              <svg className="w-9 h-9 drop-shadow-xs" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="logo-grad-cre" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#7c3aed" />
                     <stop offset="100%" stopColor="#c084fc" />
                   </linearGradient>
                 </defs>
-                <rect x="4" y="4" width="92" height="92" rx="28" fill="url(#logo-grad)" />
+                <rect x="4" y="4" width="92" height="92" rx="28" fill="url(#logo-grad-cre)" />
                 <g stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.95">
                   <path d="M50 50 V72" />
                   <path d="M50 60 Q36 56 42 48" />
                   <path d="M50 40 C42 30 58 30 50 40 Z" fill="none" />
                   <path d="M50 40 C60 32 60 48 50 40 Z" fill="none" />
                   <path d="M50 40 C58 50 42 50 50 40 Z" fill="none" />
+                  <path d="M50 40 C40 48 40 32 50 40 Z" fill="none" />
+                  <circle cx="50" cy="40" r="3.5" fill="white" />
                 </g>
               </svg>
-              <h1 className="text-xl md:text-2xl font-serif font-bold text-slate-900">DreamWish</h1>
+              <div>
+                <h1 className="font-serif text-lg font-bold leading-none text-slate-900 italic">DreamWish</h1>
+                <span className="text-[10px] text-slate-405 uppercase tracking-widest font-bold">Flower & Greeting Cards</span>
+              </div>
             </div>
 
             {/* Top Right: History + Tabs */}
@@ -455,93 +471,93 @@ export default function App() {
               {step === 5 && (
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="p-2 rounded-full border border-stone-200 hover:border-purple-300 bg-white hover:bg-stone-50 transition-all active-press-scale"
+                  className="flex items-center gap-1.5 text-xs text-slate-800 font-semibold bg-white border border-stone-200/80 px-3 py-1.5 rounded-full shadow-2xs hover:bg-stone-50 cursor-pointer active:scale-95"
                 >
                   <History size={13} className="text-purple-600" />
+                  <span>My Creations ({savedCards.length})</span>
                 </button>
               )}
 
-              {/* Progress indicator */}
-              {step < 5 && (
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="relative h-1 bg-stone-200 rounded-full w-6 overflow-hidden">
-                      <span className="text-purple-700">
-                        <div
-                          className={`h-full bg-purple-700 transition-all duration-300`}
-                          style={{
-                            width: i < step ? '100%' : i === step ? '50%' : '0%'
-                          }}
-                        />
-                      </span>
-                      <div
-                        className={`absolute left-0 h-[3px] bg-purple-600 -z-10 transition-all duration-300 rounded-full`}
-                        style={{
-                          width: i <= step ? '100%' : '0%'
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Main Wizard Container */}
-          <div className="w-full max-w-7xl mx-auto z-10">
-            {/* History Panel */}
-            {showHistory && step === 5 && (
-              <AnimatePresence>
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="mb-6 p-3.5 rounded-2xl border border-stone-100 hover:border-purple-200 bg-stone-50 hover:bg-white transition-all shadow-2xs space-y-3"
-                >
-                  <div className="flex items-center gap-1.5 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold">
-                    <History size={12} className="text-purple-600" />
-                    Previous Cards
+          <main className="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
+            {/* Steps Wizard Progress Indicator - No print */}
+            {step < 5 && (
+              <div className="w-full mb-6 sm:mb-10 no-print">
+                {/* Mobile view */}
+                <div className="sm:hidden flex flex-col gap-2">
+                  <div className="text-xs text-slate-800 font-bold uppercase tracking-wider flex justify-between items-center px-1">
+                    <span>Step {step} of 4</span>
+                    <span className="text-purple-700">
+                      {['Choose Theme', 'Write Message', 'Assemble Bouquet', 'Select Music'][step - 1]}
+                    </span>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 max-h-48 overflow-y-auto">
-                    {savedCards.map((card) => {
-                      const config = OCCASIONS.find(o => o.id === card.state.occasion);
+                  <div className="w-full h-1.5 bg-stone-200/60 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-purple-700 transition-all duration-300"
+                      style={{ width: `${(step / 4) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Desktop/Tablet view */}
+                <div className="hidden sm:block max-w-2xl mx-auto">
+                  <div className="flex justify-between items-center relative">
+                    {/* Connecting bar */}
+                    <div className="absolute left-0 right-0 h-[3px] bg-stone-200/60 -z-10 rounded-full" />
+                    <div 
+                      className="absolute left-0 h-[3px] bg-purple-600 -z-10 transition-all duration-300 rounded-full"
+                      style={{ width: `${((step - 1) / 3) * 100}%` }}
+                    />
+
+                    {/* Nodes */}
+                    {['Occasion', 'Message', 'Bouquet', 'Music'].map((name, i) => {
+                      const active = step >= i + 1;
+                      const current = step === i + 1;
                       return (
-                        <motion.button
-                          key={card.id}
-                          onClick={() => handleLoadSavedCard(card.state)}
-                          whileHover={{ scale: 1.05 }}
-                          className="p-2 rounded-xl border border-stone-200 hover:border-purple-300 bg-white hover:bg-purple-50 transition-all text-left text-[10px] space-y-1"
-                        >
-                          <div className="flex items-center gap-1.5 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold">
-                            {config && <DynamicIcon name={config.iconName} className="text-purple-650" size={12} />}
-                            <span className="truncate">{config?.name}</span>
+                        <div key={name} className="flex flex-col items-center">
+                          <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
+                            current 
+                              ? 'bg-purple-700 border-purple-700 text-white shadow-md ring-4 ring-purple-100 scale-105' 
+                              : active 
+                                ? 'bg-purple-50 border-purple-300 text-purple-700' 
+                                : 'bg-white border-stone-200 text-stone-400'
+                          }`}>
+                            {i + 1}
                           </div>
-                          <p className="truncate text-slate-700 font-medium">{card.state.recipient}</p>
-                          <p className="text-slate-500 line-clamp-2">{card.state.message}</p>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleLoadSavedCard(card.state);
-                            }}
-                            className="w-full py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
-                          >
-                            Reload
-                          </button>
-                        </motion.button>
+                          <span className={`text-[11px] font-bold mt-2 uppercase tracking-widest ${
+                            current ? 'text-purple-700 font-extrabold' : active ? 'text-slate-800/60' : 'text-stone-400'
+                          }`}>
+                            {name}
+                          </span>
+                        </div>
                       );
                     })}
                   </div>
-                  <button
-                    onClick={() => setShowHistory(false)}
-                    className="w-full text-center text-[10px] font-bold text-purple-500 hover:bg-purple-50 py-2 rounded-xl transition-colors cursor-pointer"
-                  >
-                    Close History
-                  </button>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              </div>
             )}
             {/* WIZARD SCREEN */}
             <div className="w-full">
+              {step < 5 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
+                  {/* Left Column (5 cols): Step Wizard Controls */}
+                  <div className="lg:col-span-5 space-y-6">
+                    <AnimatePresence mode="wait">
+                      {/* Step 1: Occasion Selection */}
+                      {step === 1 && (
+                        <motion.div
+                          key="step-1"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={pageTransition}
+                          className="space-y-5 w-full"
+                        >
+                          <div className="text-center lg:text-left space-y-1">
+                            <h2 className="font-serif text-2xl font-bold text-slate-900">Choose a Special Occasion</h2>
+                            <p className="text-xs text-slate-500">
+                              Selecting an occasion sets the design theme, color palette, and template choices.
+                            </p>
+                          </div>
               {step < 5 ? (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
                   {/* Left Column (5 cols): Step Wizard Controls */}
@@ -579,7 +595,7 @@ export default function App() {
                                     onClick={() => handleSelectOccasion(occ.id)}
                                     className={`p-2.5 rounded-xl border text-center flex flex-col justify-center items-center h-20 transition-all cursor-pointer active-press-scale ${
                                       occasion === occ.id
-                                        ? 'bg-gradient-to-br from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 border-transparent text-white shadow-md scale-[1.03]'
+                                        ? 'bg-purple-700 border-transparent text-white shadow-md scale-[1.03]'
                                         : 'bg-white border-stone-200/50 hover:bg-stone-50 hover:border-purple-200 hover:shadow-2xs text-slate-800'
                                     }`}
                                   >
@@ -629,6 +645,24 @@ export default function App() {
                           </div>
                         </motion.div>
                       )}
+                          <div className="flex justify-end pt-4">
+                            <button
+                              disabled={!isStepValid()}
+                              onClick={handleNextStep}
+                              className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
+                                isStepValid()
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                              }`}
+                            >
+                              <span>Continue</span>
+                              <span className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform ${isStepValid() ? 'bg-white/15 group-hover:translate-x-0.5' : 'bg-stone-100'}`}>
+                                <ArrowRight size={14} className={isStepValid() ? 'text-white' : 'text-stone-300'} />
+                              </span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
 
                       {/* Step 2: Message Configuration */}
                       {step === 2 && (
@@ -646,7 +680,54 @@ export default function App() {
                               Write a heartfelt message, populate from suggestions, or let our AI helper write a draft!
                             </p>
                           </div>
+                      {/* Step 2: Message Configuration */}
+                      {step === 2 && (
+                        <motion.div
+                          key="step-2"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={pageTransition}
+                          className="space-y-5 w-full"
+                        >
+                          <div className="text-center lg:text-left space-y-1">
+                            <h2 className="font-serif text-2xl font-bold text-slate-900">Personalize Your Message</h2>
+                            <p className="text-xs text-slate-500">
+                              Write a heartfelt message, populate from suggestions, or let our AI helper write a draft!
+                            </p>
+                          </div>
 
+                          <div className="double-bezel-outer shadow-md">
+                            <div className="double-bezel-inner p-5 space-y-4">
+                              {/* Sender and Recipient */}
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                  <label htmlFor="recipient-input" className="text-[10px] uppercase tracking-wider text-slate-800 font-bold block">To (Recipient)</label>
+                                  <input
+                                    id="recipient-input"
+                                    name="recipient"
+                                    type="text"
+                                    placeholder="e.g. Arpit"
+                                    value={recipient}
+                                    onChange={(e) => setRecipient(e.target.value)}
+                                    maxLength={25}
+                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-semibold"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label htmlFor="sender-input" className="text-[10px] uppercase tracking-wider text-slate-800 font-bold block">From (Sender)</label>
+                                  <input
+                                    id="sender-input"
+                                    name="sender"
+                                    type="text"
+                                    placeholder="e.g. Arpita"
+                                    value={sender}
+                                    onChange={(e) => setSender(e.target.value)}
+                                    maxLength={25}
+                                    className="w-full bg-slate-50/50 border border-stone-200/80 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-stone-400 focus:outline-hidden focus:border-purple-400 focus:bg-white transition-all font-semibold"
+                                  />
+                                </div>
+                              </div>
                           <div className="double-bezel-outer shadow-md">
                             <div className="double-bezel-inner p-5 space-y-4">
                               {/* Sender and Recipient */}
@@ -702,7 +783,7 @@ export default function App() {
                                   <button
                                     onClick={handleAiSuggestion}
                                     disabled={isAiLoading}
-                                    className="flex items-center gap-1.5 text-xs font-bold bg-purple-700 text-white px-3.5 rounded-xl shadow-xs hover:bg-purple-800 active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
+                                    className="flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white px-3.5 rounded-xl shadow-xs active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
                                   >
                                     <Sparkles size={11} className={isAiLoading ? 'animate-spin' : ''} />
                                     <span>{isAiLoading ? 'Writing...' : 'AI Assist'}</span>
@@ -710,6 +791,35 @@ export default function App() {
                                 </div>
                               </div>
 
+                              {/* Templates list selection */}
+                              <div className="space-y-2">
+                                <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">
+                                  Suggested Templates
+                                </span>
+                                <motion.div 
+                                  variants={staggerContainer}
+                                  initial="hidden"
+                                  animate="show"
+                                  className="space-y-1.5 max-h-[140px] overflow-y-auto pr-1 no-scrollbar"
+                                >
+                                  {currentOccasionConfig.prebuiltMessages.map((msg, index) => (
+                                    <motion.button
+                                      variants={staggerItem}
+                                      key={index}
+                                      onClick={() => setMessage(msg)}
+                                      className={`w-full text-left p-2 rounded-xl border text-[11px] leading-relaxed transition-all cursor-pointer active-press-scale ${
+                                        message === msg
+                                          ? 'border-purple-300 bg-purple-50/40 text-purple-900 font-medium'
+                                          : 'border-stone-100 bg-slate-50/30 text-slate-700 hover:bg-white hover:border-purple-200'
+                                      }`}
+                                    >
+                                      "{msg}"
+                                    </motion.button>
+                                  ))}
+                                </motion.div>
+                              </div>
+                            </div>
+                          </div>
                               {/* Templates list selection */}
                               <div className="space-y-2">
                                 <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">
@@ -768,7 +878,51 @@ export default function App() {
                           </div>
                         </motion.div>
                       )}
+                          {/* Wizard controls */}
+                          <div className="flex items-center justify-between gap-4 pt-4">
+                            <button
+                              onClick={handlePrevStep}
+                              className="group flex items-center justify-between gap-3 border border-stone-200 bg-white/80 hover:bg-white text-slate-800 font-bold pl-2 pr-6 py-2 rounded-full transition-all active-press-scale cursor-pointer text-xs uppercase tracking-wider"
+                            >
+                              <span className="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center transition-transform group-hover:-translate-x-0.5">
+                                <ArrowLeft size={14} className="text-slate-650" />
+                              </span>
+                              <span>Back</span>
+                            </button>
+                            <button
+                              disabled={!isStepValid()}
+                              onClick={handleNextStep}
+                              className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
+                                isStepValid()
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                              }`}
+                            >
+                              <span>Build Bouquet</span>
+                              <span className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform ${isStepValid() ? 'bg-white/15 group-hover:translate-x-0.5' : 'bg-stone-100'}`}>
+                                <ArrowRight size={14} className={isStepValid() ? 'text-white' : 'text-stone-300'} />
+                              </span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
 
+                      {/* Step 3: Interactive Bouquet Builder */}
+                      {step === 3 && (
+                        <motion.div
+                          key="step-3"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={pageTransition}
+                          className="space-y-5 w-full"
+                        >
+                          <div className="text-center lg:text-left space-y-1">
+                            <h2 className="font-serif text-2xl font-bold text-slate-900">Assemble the Flower Bouquet</h2>
+                            <p className="text-xs text-slate-500">
+                              Select a variety of flowers to build a hand-tied arrangement in your chosen wrap paper.
+                            </p>
+                          </div>
                       {/* Step 3: Interactive Bouquet Builder */}
                       {step === 3 && (
                         <motion.div
@@ -794,7 +948,43 @@ export default function App() {
                             cardBg={cardBg}
                             onChangeCardBg={setCardBg}
                           />
+                          <BouquetBuilder
+                            selectedFlowers={selectedFlowers}
+                            onChangeFlowers={setSelectedFlowers}
+                            wrapStyle={wrapStyle}
+                            onChangeWrapStyle={setWrapStyle}
+                            cardBg={cardBg}
+                            onChangeCardBg={setCardBg}
+                          />
 
+                          {/* Wizard controls */}
+                          <div className="flex items-center justify-between gap-4 pt-4 border-t border-stone-250/20">
+                            <button
+                              onClick={handlePrevStep}
+                              className="group flex items-center justify-between gap-3 border border-stone-200 bg-white/80 hover:bg-white text-slate-800 font-bold pl-2 pr-6 py-2 rounded-full transition-all active-press-scale cursor-pointer text-xs uppercase tracking-wider"
+                            >
+                              <span className="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center transition-transform group-hover:-translate-x-0.5">
+                                <ArrowLeft size={14} className="text-slate-650" />
+                              </span>
+                              <span>Back</span>
+                            </button>
+                            <button
+                              disabled={!isStepValid()}
+                              onClick={handleNextStep}
+                              className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
+                                isStepValid()
+                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                              }`}
+                            >
+                              <span>Select Music</span>
+                              <span className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform ${isStepValid() ? 'bg-white/15 group-hover:translate-x-0.5' : 'bg-stone-100'}`}>
+                                <ArrowRight size={14} className={isStepValid() ? 'text-white' : 'text-stone-300'} />
+                              </span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
                           {/* Wizard controls */}
                           <div className="flex items-center justify-between gap-4 pt-4 border-t border-stone-250/20">
                             <button
@@ -840,6 +1030,22 @@ export default function App() {
                               Choose a gentle backing track that starts looping when the recipient opens the envelope.
                             </p>
                           </div>
+                      {/* Step 4: Music Selection */}
+                      {step === 4 && (
+                        <motion.div
+                          key="step-4"
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={pageTransition}
+                          className="space-y-5 w-full"
+                        >
+                          <div className="text-center lg:text-left space-y-1">
+                            <h2 className="font-serif text-2xl font-bold text-slate-900">Add Ambient Music</h2>
+                            <p className="text-xs text-slate-500">
+                              Choose a gentle backing track that starts looping when the recipient opens the envelope.
+                            </p>
+                          </div>
 
                           <div className="double-bezel-outer shadow-md">
                             <div className="double-bezel-inner p-5 space-y-4">
@@ -863,14 +1069,16 @@ export default function App() {
                                   <div className="flex items-center gap-3">
                                     <Icons.VolumeX size={18} className={music === 'none' ? 'text-purple-700' : 'text-slate-400'} strokeWidth={1.5} />
                                     <div>
-                                      <p className="text-xs font-bold text-slate-800">None</p>
-                                      <p className="text-[10px] text-slate-500">Quiet experience</p>
+                                      <div className="text-xs text-slate-800 font-bold">No Music</div>
+                                      <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold block mt-0.5">
+                                        A quiet and peaceful experience
+                                      </span>
                                     </div>
                                   </div>
                                   <span className="text-[10px] text-purple-700 font-bold">{music === 'none' ? 'Active' : 'Select'}</span>
                                 </motion.button>
 
-                                {/* Audio tracks */}
+                                {/* Royalty free audio options */}
                                 {AUDIO_TRACKS.map((track) => (
                                   <motion.button
                                     variants={staggerItem}
@@ -885,26 +1093,36 @@ export default function App() {
                                     <div className="flex items-center gap-3">
                                       <DynamicIcon name={track.iconName} className={music === track.id ? 'text-purple-750' : 'text-slate-500'} size={18} />
                                       <div>
-                                        <p className="text-xs font-bold text-slate-800">{track.name}</p>
-                                        <p className="text-[10px] text-slate-500">{track.description}</p>
+                                        <div className="text-xs text-slate-800 font-bold">{track.name}</div>
+                                        <span className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold block mt-0.5">
+                                          Looping background instrumental
+                                        </span>
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                      {isMusicPlaying && music === track.id && (
+                                      {music === track.id && isMusicPlaying && (
                                         <Volume2 size={12} className="text-purple-600 animate-bounce" />
                                       )}
                                       <span className="text-[10px] text-purple-700 font-bold">
-                                        {music === track.id ? (isMusicPlaying ? 'Playing' : 'Selected') : 'Preview'}
+                                        {music === track.id ? 'Active' : 'Select'}
                                       </span>
                                     </div>
                                   </motion.button>
                                 ))}
                               </motion.div>
+
+                              {/* Small notice banner */}
+                              <div className="flex items-start gap-2 bg-slate-50 border border-stone-200/50 rounded-xl p-3 text-[10px] text-slate-500 leading-relaxed font-semibold">
+                                <Info size={13} className="shrink-0 text-amber-500 mt-0.5" />
+                                <span>
+                                  Preview music plays for a few seconds. When shared, the track loops indefinitely upon opening the wax seal.
+                                </span>
+                              </div>
                             </div>
                           </div>
 
                           {/* Wizard controls */}
-                          <div className="flex items-center justify-between gap-4 pt-4 border-t border-stone-250/20">
+                          <div className="flex items-center justify-between gap-4 pt-4">
                             <button
                               onClick={handlePrevStep}
                               className="group flex items-center justify-between gap-3 border border-stone-200 bg-white/80 hover:bg-white text-slate-800 font-bold pl-2 pr-6 py-2 rounded-full transition-all active-press-scale cursor-pointer text-xs uppercase tracking-wider"
@@ -915,17 +1133,12 @@ export default function App() {
                               <span>Back</span>
                             </button>
                             <button
-                              disabled={!isStepValid()}
                               onClick={handleNextStep}
-                              className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
-                                isStepValid()
-                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
-                                  : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
-                              }`}
+                              className="group flex items-center justify-between gap-4 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
                             >
-                              <span>Preview Card</span>
-                              <span className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform ${isStepValid() ? 'bg-white/15 group-hover:translate-x-0.5' : 'bg-stone-100'}`}>
-                                <ArrowRight size={14} className={isStepValid() ? 'text-white' : 'text-stone-300'} />
+                              <span>Preview & Share</span>
+                              <span className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+                                <ArrowRight size={14} className="text-white" />
                               </span>
                             </button>
                           </div>
@@ -934,31 +1147,195 @@ export default function App() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Right Column (7 cols): Live Preview */}
-                  <div className="lg:col-span-7 hidden lg:flex items-center justify-center">
-                    <GreetingCard state={getCompiledState()} />
+                  {/* Right Column (7 cols): Live Card Preview */}
+                  <div className="lg:col-span-7 w-full lg:sticky lg:top-6 space-y-3 no-print">
+                    <div className="flex items-center justify-between text-xs text-slate-550 font-bold uppercase tracking-wider px-2">
+                      <span>Live Card Preview</span>
+                      <span className="text-[10px] text-purple-700 font-extrabold flex items-center gap-1">
+                        <Icons.Sparkles size={10} className="animate-pulse" />
+                        <span>Updates In Real-time</span>
+                      </span>
+                    </div>
+
+                    <div className="double-bezel-outer shadow-lg">
+                      <div className="double-bezel-inner overflow-hidden bg-white">
+                        <GreetingCard
+                          state={getCompiledState()}
+                          isMusicPlaying={isMusicPlaying}
+                          onToggleMusic={toggleMusic}
+                          showMusicControls={false}
+                          className="min-h-[420px] lg:min-h-[560px] py-4 px-2"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (
-                /* Final Preview and Share Panel */
-                <div className="w-full flex flex-col items-center justify-center">
-                  <GreetingCard state={getCompiledState()} />
-                  <SharePanel 
-                    state={getCompiledState()}
-                    onReset={handleResetCreator}
-                  />
-                </div>
+                /* Step 5: Final Preview & Share Panel */
+                <AnimatePresence mode="wait">
+                  {step === 5 && (
+                    <motion.div
+                      key="step-5"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full pt-2"
+                    >
+                      {/* Visual Card Preview Column (7 cols) */}
+                      <div className="lg:col-span-7 flex flex-col items-center space-y-4">
+                        <div className="w-full flex items-center justify-between text-xs text-slate-550 font-bold uppercase tracking-wider px-2 no-print">
+                          <span>Card Presentation Preview</span>
+                          <span className="text-[10px] text-purple-750 font-bold flex items-center gap-1">
+                            <Icons.Sparkles size={10} />
+                            <span>Ready to Share</span>
+                          </span>
+                        </div>
+                        
+                        <div className="w-full border border-stone-200/50 rounded-3xl overflow-hidden bg-white/50 shadow-lg">
+                          <GreetingCard
+                            state={getCompiledState()}
+                            isMusicPlaying={isMusicPlaying}
+                            onToggleMusic={toggleMusic}
+                            showMusicControls={true}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Share Operations Column (5 cols) */}
+                      <div className="lg:col-span-5 space-y-6 no-print">
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-650">
+                          <button
+                            onClick={handlePrevStep}
+                            className="flex items-center gap-1 hover:text-purple-700 text-slate-700 transition-all cursor-pointer bg-white px-3.5 py-1.5 rounded-full border border-stone-200 active-press-scale"
+                          >
+                            <ArrowLeft size={12} />
+                            <span>Back to Editor</span>
+                          </button>
+                        </div>
+
+                        <SharePanel
+                          state={getCompiledState()}
+                          onReset={handleResetCreator}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               )}
             </div>
-          </div>
-        </main>
+          </main>
+
+          {/* Local Drafts Drawer / Modal Overlay */}
+          <AnimatePresence>
+            {showHistory && (
+              <motion.div 
+                className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs z-50 flex justify-end no-print"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowHistory(false)}
+              >
+                <motion.div 
+                  className="w-full max-w-sm h-full bg-white shadow-2xl p-6 flex flex-col justify-between"
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="space-y-6 overflow-hidden flex flex-col flex-1">
+                    <div className="flex items-center justify-between border-b border-stone-200 pb-3">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 flex items-center gap-1.5">
+                        <History size={16} className="text-purple-600" />
+                        <span>My Sent History</span>
+                      </h3>
+                      <button 
+                        onClick={() => setShowHistory(false)}
+                        className="text-stone-400 hover:text-stone-600 text-sm font-bold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                    </div>
+
+                    {/* Scrollable list */}
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                      {savedCards.map((card) => {
+                        const config = OCCASIONS.find(o => o.id === card.state.occasion);
+                        const dateStr = new Date(card.timestamp).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        });
+
+                        return (
+                          <div 
+                            key={card.id}
+                            className="p-3.5 rounded-2xl border border-stone-100 hover:border-purple-200 bg-stone-50 hover:bg-white transition-all shadow-2xs space-y-3"
+                          >
+                            <div className="flex justify-between items-start">
+                              <span className="text-[10px] font-semibold text-stone-400">{dateStr}</span>
+                              <div className="flex items-center gap-1.5 text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold">
+                                {config && <DynamicIcon name={config.iconName} className="text-purple-650" size={12} />}
+                                <span>{(card.state.occasion === 'custom' && card.state.customOccasionName) ? card.state.customOccasionName : config?.name}</span>
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="text-xs text-slate-800 font-bold">
+                                To: {card.state.recipient} <span className="font-normal text-stone-400 text-[10px]">from {card.state.sender}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-500 truncate mt-1">
+                                "{card.state.message}"
+                              </p>
+                              <div className="text-[10px] text-stone-400 mt-0.5">
+                                Bouquet size: {card.state.flowers.length} flowers
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => handleLoadSavedCard(card.state)}
+                              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
+                            >
+                              Load & Edit Card
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-stone-100 pt-4 mt-4">
+                    <button
+                      onClick={() => {
+                        if (confirm('Clear entire history?')) {
+                          setSavedCards([]);
+                          localStorage.removeItem('dreamwish_history');
+                        }
+                      }}
+                      className="w-full text-center text-[10px] font-bold text-purple-500 hover:bg-purple-50 py-2 rounded-xl transition-colors cursor-pointer"
+                    >
+                      Clear All History
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+        </>
       )}
 
-      {/* Footer */}
-      <footer className="w-full py-4 px-6 bg-white/30 backdrop-blur-sm border-t border-white/10 text-center">
-        <p className="text-[10px] text-slate-600 font-medium">
-          Made with <Icons.Heart size={12} className="text-purple-600 fill-purple-600 inline" strokeWidth={2.5} /> by DreamWish
-        </p>
+      <footer
+        className="w-full py-4 text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold border-t border-stone-200/20 bg-stone-50/20 no-print">
+        © {new Date().getFullYear()} DreamWish. Handcrafted flowers and wishes.
+      </footer>
+
+      <footer
+        className="w-full py-4 text-center text-xs text-slate-500 font-semibold border-t border-stone-200/20 bg-stone-50/10 no-print flex items-center justify-center gap-1">
+        <span>Made with love</span>
+        <Icons.Heart size={12} className="text-purple-600 fill-purple-600 inline" strokeWidth={2.5} />
+        <span>by Arpit</span>
       </footer>
 
       {/* Film Grain Overlay */}

@@ -1,8 +1,8 @@
 import React from 'react';
-import { FLOWER_LIST, BloomSVG, AssembledFlower } from './FlowerAssets';
+import { FLOWER_LIST, BloomSVG } from './FlowerAssets';
 import type { FlowerSelection } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Trash2, HelpCircle, Shuffle, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Plus, Minus, Trash2, Shuffle, Sparkles } from 'lucide-react';
 
 interface BouquetBuilderProps {
   selectedFlowers: FlowerSelection[];
@@ -12,6 +12,31 @@ interface BouquetBuilderProps {
   cardBg: 'white' | 'silver' | 'slate' | 'blush' | 'gold';
   onChangeCardBg: (bg: 'white' | 'silver' | 'slate' | 'blush' | 'gold') => void;
 }
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03,
+      delayChildren: 0.02
+    }
+  }
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 10, scale: 0.97 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      duration: 0.35,
+      bounce: 0.08
+    }
+  }
+};
 
 export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
   selectedFlowers,
@@ -51,8 +76,6 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
     const updated = selectedFlowers.filter((_, i) => i !== actualIndex);
     onChangeFlowers(updated);
   };
-
-
 
   // Generate a random bouquet
   const handleRandomBouquet = () => {
@@ -97,166 +120,33 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
     return selectedFlowers.filter(f => f.flowerId === flowerId).length;
   };
 
-  // SVG Geometry for Bouquet layout
-  const wrapX = 200;
-  const wrapY = 425;
-
-  // Compute positions of each flower dynamically based on index and total count
-  const positionedFlowers = selectedFlowers.map((selection, index) => {
-    const total = selectedFlowers.length;
-    const flowerConfig = FLOWER_LIST.find(f => f.id === selection.flowerId);
-    
-    // Spread angle: from -37.5 deg to +37.5 deg
-    let angle = 0;
-    if (total > 1) {
-      const spread = 75; // total width of fan in degrees
-      angle = -spread / 2 + (spread / (total - 1)) * index;
-    }
-
-    // Radius: varies slightly to create staggered layers
-    // Even indices are slightly higher, odd slightly lower
-    const baseRadius = 260; // Increased from 240
-    const staggeredOffset = (index % 2 === 0 ? 25 : -25) + (index % 3 === 0 ? 10 : -10);
-    const radius = baseRadius + staggeredOffset;
-
-    // Trigonometric conversion (angles in radians, rotated so 0 is straight up)
-    const rad = (angle * Math.PI) / 180;
-    const bloomX = wrapX + radius * Math.sin(rad);
-    const bloomY = wrapY - radius * Math.cos(rad);
-
-    // Minor random-looking scales and rotation variations
-    const scale = 1.3 + (index % 4) * 0.08; // Increased flower scale from 1.15
-    const bloomRotation = angle + ((index % 3) - 1) * 12; // tilted slightly organic
-
-    return {
-      ...selection,
-      emoji: flowerConfig?.emoji || '🌸',
-      name: flowerConfig?.name || 'Flower',
-      meaning: flowerConfig?.meaning || '',
-      bloomX,
-      bloomY,
-      angle: bloomRotation,
-      scale
-    };
-  });
-
-  // Render bouquet wrapping paper paths
-  const renderWrapGraphic = () => {
-    let paperColor = '#D6C0B3'; // kraft
-    let paperStroke = '#BFA090';
-
-    if (wrapStyle === 'blush') {
-      paperColor = '#FCE7F3'; // pink
-      paperStroke = '#F472B6';
-    } else if (wrapStyle === 'mesh') {
-      paperColor = '#F3F4F6'; // mesh white
-      paperStroke = '#D1D5DB';
-    } else if (wrapStyle === 'gold') {
-      paperColor = '#FFFDF5'; // golden cream
-      paperStroke = '#EAB308';
-    }
-
-    return (
-      <g>
-        {/* Background wrapping paper fold - Enlarged for better presence */}
-        <path
-          d="M 100 260 C 130 325 150 390 200 470 C 250 390 270 325 300 260 L 200 220 Z"
-          fill={paperColor}
-          stroke={paperStroke}
-          strokeWidth="1.5"
-          opacity="0.8"
-        />
-        
-        {/* Left wrap fold overlay */}
-        <path
-          d="M 90 250 C 120 350 150 420 200 475 C 190 390 150 330 90 250 Z"
-          fill={paperColor}
-          stroke={paperStroke}
-          strokeWidth="1.5"
-          opacity="0.9"
-        />
-
-        {/* Right wrap fold overlay */}
-        <path
-          d="M 310 250 C 280 350 250 420 200 475 C 210 390 250 330 310 250 Z"
-          fill={paperColor}
-          stroke={paperStroke}
-          strokeWidth="1.5"
-          opacity="0.9"
-        />
-
-        {/* Mesh pattern overlay if selected */}
-        {wrapStyle === 'mesh' && (
-          <path
-            d="M 100 260 L 300 260 M 115 295 L 285 295 M 130 330 L 270 330 M 145 365 L 255 365 M 160 400 L 240 400"
-            stroke="#FFFFFF"
-            strokeWidth="1"
-            strokeDasharray="3 3"
-            fill="none"
-            opacity="0.7"
-          />
-        )}
-
-        {/* Gold accent trim for gold style */}
-        {wrapStyle === 'gold' && (
-          <path
-            d="M 100 260 Q 200 220 300 260"
-            stroke="#CA8A04"
-            strokeWidth="2.5"
-            fill="none"
-          />
-        )}
-        
-        {/* Bow and Ribbon tied at (200, 425) */}
-        <g transform="translate(200, 425)">
-          {/* Ribbon tails hanging down */}
-          <path
-            d="M 0 0 C -15 20 -20 40 -15 55 M 0 0 C 15 20 20 40 15 55"
-            fill="none"
-            stroke={wrapStyle === 'gold' ? '#CA8A04' : '#DB2777'}
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          {/* Ribbon Bow Loops */}
-          <path
-            d="M 0 0 C -25 -25 -35 5 0 0 M 0 0 C 25 -25 35 5 0 0"
-            fill={wrapStyle === 'gold' ? '#FDE047' : '#F472B6'}
-            stroke={wrapStyle === 'gold' ? '#CA8A04' : '#D11D60'}
-            strokeWidth="2.5"
-          />
-          {/* Ribbon Knot */}
-          <circle cx="0" cy="0" r="6" fill={wrapStyle === 'gold' ? '#CA8A04' : '#BE123C'} />
-        </g>
-      </g>
-    );
-  };
-
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start w-full">
-      {/* 1. Flower Picker Controls - 5 columns */}
-      <div className="lg:col-span-5 space-y-6 w-full order-2 lg:order-1">
-        <div className="glass-panel p-6 rounded-2xl shadow-sm border border-white/50 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-purple-100 pb-3">
+    <div className="space-y-6 w-full">
+      {/* 1. Flower Picker Panel */}
+      <div className="double-bezel-outer">
+        <div className="double-bezel-inner p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200/50 pb-3">
             <div>
-              <h3 className="font-serif text-xl font-bold text-purple-950">Select Blooms</h3>
-              <p className="text-xs text-purple-900/60 mt-0.5">
+              <h3 className="font-serif text-lg font-bold text-slate-900">Select Blooms</h3>
+              <p className="text-xs text-slate-500/70 mt-0.5">
                 Up to {MAX_TOTAL_FLOWERS} flowers. Max {MAX_PER_TYPE} of each type.
               </p>
             </div>
+            
             <div className="flex flex-wrap items-center gap-1.5 self-end sm:self-auto">
               <button
                 onClick={handleRandomBouquet}
-                className="flex items-center justify-center gap-1.5 text-xs bg-purple-50 text-purple-700 hover:bg-purple-100 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-purple-200/50 shadow-2xs"
+                className="flex items-center justify-center gap-1.5 text-xs bg-rose-50 text-rose-700 hover:bg-rose-100/50 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-rose-200/40 shadow-2xs active-press-scale"
                 title="Generate a random bouquet"
               >
-                <Sparkles size={13} className="text-purple-600 animate-pulse" />
+                <Sparkles size={13} className="text-rose-600" />
                 <span>Random</span>
               </button>
               
               {selectedFlowers.length > 1 && (
                 <button
                   onClick={handleShuffle}
-                  className="flex items-center justify-center gap-1.5 text-xs bg-stone-50 text-stone-700 hover:bg-stone-100 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-stone-200/50 shadow-2xs"
+                  className="flex items-center justify-center gap-1.5 text-xs bg-stone-50 text-stone-700 hover:bg-stone-100 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-stone-200/50 shadow-2xs active-press-scale"
                   title="Shuffle flower positions"
                 >
                   <Shuffle size={13} className="text-stone-500" />
@@ -267,7 +157,7 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
               {selectedFlowers.length > 0 && (
                 <button
                   onClick={handleClear}
-                  className="flex items-center justify-center gap-1.5 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-rose-100 shadow-2xs"
+                  className="flex items-center justify-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer h-10 border border-rose-100 shadow-2xs active-press-scale"
                   title="Clear all flowers"
                 >
                   <Trash2 size={13} />
@@ -279,50 +169,55 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
 
           {/* Bouquet Size Progress Bar */}
           <div className="space-y-1.5">
-            <div className="flex justify-between text-xs font-semibold text-purple-950">
+            <div className="flex justify-between text-xs font-semibold text-slate-900">
               <span>Bouquet Composition</span>
-              <span className={selectedFlowers.length === MAX_TOTAL_FLOWERS ? 'text-emerald-600 font-bold' : 'text-purple-600'}>
+              <span className={selectedFlowers.length === MAX_TOTAL_FLOWERS ? 'text-emerald-600 font-bold' : 'text-rose-700'}>
                 {selectedFlowers.length} / {MAX_TOTAL_FLOWERS} Blooms
               </span>
             </div>
-            <div className="h-2 w-full bg-purple-100 rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-purple-400 via-pink-400 to-emerald-400 transition-all duration-500 ease-out" 
+                className="h-full bg-gradient-to-r from-rose-400 via-rose-500 to-emerald-500 transition-all duration-500 ease-out" 
                 style={{ width: `${(selectedFlowers.length / MAX_TOTAL_FLOWERS) * 100}%` }}
               />
             </div>
           </div>
 
           {/* List of Flowers */}
-          <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="space-y-2 max-h-[300px] overflow-y-auto pr-1"
+          >
             {FLOWER_LIST.map((flower) => {
               const count = getFlowerCount(flower.id);
               const isAtMaxType = count >= MAX_PER_TYPE;
               const isAtMaxTotal = selectedFlowers.length >= MAX_TOTAL_FLOWERS;
 
               return (
-                <div 
+                <motion.div 
+                  variants={staggerItem}
                   key={flower.id}
-                  className="flex items-center justify-between p-2.5 rounded-xl border border-stone-200/50 bg-white/60 hover:bg-white hover:border-purple-200 transition-all shadow-xs"
+                  className="flex items-center justify-between p-2.5 rounded-xl border border-stone-200/50 bg-white/60 hover:bg-white hover:border-rose-200 transition-all shadow-xs"
                 >
                   <div className="flex items-center gap-3">
                     {/* Flower mini circle preview */}
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200/50 border border-stone-200/40 relative shrink-0 shadow-inner">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-stone-100 to-stone-250/30 border border-stone-200/40 relative shrink-0 shadow-inner">
                       <svg viewBox="0 0 100 100" className="w-8 h-8">
                         <BloomSVG type={flower.id} color={flower.defaultColor} scale={0.9} />
                       </svg>
                       {count > 0 && (
-                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-purple-600 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-xs">
+                        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-xs">
                           {count}
                         </span>
                       )}
                     </div>
                     <div>
-                      <div className="font-semibold text-sm text-purple-950 flex items-center gap-1.5">
-                        <span>{flower.name}</span>
-                        <span className="text-xs font-normal text-purple-900/60">({flower.emoji})</span>
+                      <div className="font-semibold text-sm text-slate-800">
+                        {flower.name}
                       </div>
-                      <div className="text-xs text-purple-900/50 italic">{flower.meaning}</div>
+                      <div className="text-xs text-slate-500/70 italic">{flower.meaning}</div>
                     </div>
                   </div>
 
@@ -331,9 +226,9 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
                     <button
                       disabled={count === 0}
                       onClick={() => handleRemoveFlower(flower.id)}
-                      className={`w-12 h-12 flex items-center justify-center rounded-lg border transition-colors shrink-0 ${
+                      className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-colors shrink-0 active-press-scale ${
                         count > 0 
-                          ? 'border-purple-200 text-purple-700 hover:bg-purple-50 cursor-pointer' 
+                          ? 'border-stone-200 text-slate-700 hover:bg-slate-50 cursor-pointer' 
                           : 'border-stone-100 text-stone-300 cursor-not-allowed'
                       }`}
                     >
@@ -342,36 +237,44 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
                     <button
                       disabled={isAtMaxType || isAtMaxTotal}
                       onClick={() => handleAddFlower(flower.id)}
-                      className={`w-12 h-12 flex items-center justify-center rounded-lg border transition-colors shrink-0 ${
+                      className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-colors shrink-0 active-press-scale ${
                         !isAtMaxType && !isAtMaxTotal
-                          ? 'border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 cursor-pointer'
+                          ? 'border-rose-200 bg-rose-50/50 text-rose-700 hover:bg-rose-50 cursor-pointer'
                           : 'border-stone-100 text-stone-300 bg-stone-50 cursor-not-allowed'
                       }`}
-                      title={isAtMaxType ? 'Limit of 2 per type' : isAtMaxTotal ? 'Bouquet size limit reached' : ''}
+                      title={isAtMaxType ? 'Limit of 4 per type' : isAtMaxTotal ? 'Bouquet size limit reached' : ''}
                     >
                       <Plus size={14} />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* Wrapping Paper Selector */}
-        <div className="glass-panel p-5 rounded-2xl shadow-sm border border-white/50 space-y-3">
-          <h4 className="text-xs uppercase tracking-wider text-purple-950 font-bold">
+      {/* 2. Wrapping Paper Selector Panel */}
+      <div className="double-bezel-outer">
+        <div className="double-bezel-inner p-5 space-y-3">
+          <h4 className="text-xs uppercase tracking-wider text-slate-800 font-bold">
             Select Bouquet Wrapping
           </h4>
-          <div className="grid grid-cols-4 gap-2">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-4 gap-2"
+          >
             {(['kraft', 'blush', 'mesh', 'gold'] as const).map((style) => (
-              <button
+              <motion.button
+                variants={staggerItem}
                 key={style}
                 onClick={() => onChangeWrapStyle(style)}
-                className={`py-3 px-2 min-h-[48px] rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer flex flex-col items-center justify-center ${
+                className={`py-3 px-2 min-h-[48px] rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer flex flex-col items-center justify-center active-press-scale ${
                   wrapStyle === style
-                    ? 'border-gold-500 bg-gold-50 text-gold-700 shadow-sm font-bold scale-[1.03]'
-                    : 'border-stone-200/50 bg-white/70 text-purple-950 hover:bg-white'
+                    ? 'border-rose-600 bg-rose-50/50 text-rose-800 shadow-sm font-bold scale-[1.03]'
+                    : 'border-stone-200/50 bg-white/70 text-slate-800 hover:bg-white'
                 }`}
               >
                 <div className={`w-6 h-6 rounded-full mx-auto mb-1.5 border border-black/5 ${
@@ -380,17 +283,24 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
                   style === 'mesh' ? 'bg-gradient-to-tr from-stone-200 via-stone-50 to-stone-200' : 'bg-[#FFFDF5] border-amber-300'
                 }`} />
                 <span className="capitalize text-[10px]">{style}</span>
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* Backdrop Selector */}
-        <div className="glass-panel p-5 rounded-2xl shadow-sm border border-white/50 space-y-3">
-          <h4 className="text-xs uppercase tracking-wider text-purple-950 font-bold">
+      {/* 3. Backdrop Selector Panel */}
+      <div className="double-bezel-outer">
+        <div className="double-bezel-inner p-5 space-y-3">
+          <h4 className="text-xs uppercase tracking-wider text-slate-800 font-bold">
             Select Card Backdrop Style
           </h4>
-          <div className="grid grid-cols-5 gap-1.5">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-5 gap-1.5"
+          >
             {[
               { id: 'white', name: 'White', bgClass: 'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border border-purple-100/30' },
               { id: 'silver', name: 'Silver', bgClass: 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border border-slate-200' },
@@ -398,112 +308,21 @@ export const BouquetBuilder: React.FC<BouquetBuilderProps> = ({
               { id: 'blush', name: 'Blush', bgClass: 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border border-pink-100' },
               { id: 'gold', name: 'Gold', bgClass: 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border border-amber-100' }
             ].map((theme) => (
-              <button
+              <motion.button
+                variants={staggerItem}
                 key={theme.id}
                 onClick={() => onChangeCardBg(theme.id as any)}
-                className={`py-2 px-1 rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer flex flex-col items-center justify-center min-h-[58px] ${
+                className={`py-2 px-1 rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer flex flex-col items-center justify-center min-h-[58px] active-press-scale ${
                   cardBg === theme.id
-                    ? 'border-purple-600 ring-2 ring-purple-100 shadow-sm font-bold scale-[1.03]'
-                    : 'border-stone-200/50 bg-white/70 text-purple-950 hover:bg-white'
+                    ? 'border-rose-600 ring-2 ring-rose-50/50 shadow-sm font-bold scale-[1.03]'
+                    : 'border-stone-200/50 bg-white/70 text-slate-800 hover:bg-white'
                 }`}
               >
                 <div className={`w-5 h-5 rounded-full mx-auto mb-1 border border-black/5 ${theme.bgClass}`} />
                 <span className="text-[9px] font-medium leading-none">{theme.name}</span>
-              </button>
+              </motion.button>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Visual Bouquet Canvas Preview - 7 columns */}
-      <div className="lg:col-span-7 flex flex-col items-center order-1 lg:order-2 w-full sticky top-0 z-20 bg-stone-50/90 backdrop-blur-md py-4 lg:py-0 lg:bg-transparent lg:backdrop-blur-none border-b border-stone-200/20 lg:border-none">
-        <div className={`relative w-full max-w-[420px] h-[320px] sm:h-[380px] lg:h-auto lg:aspect-[4/5] rounded-3xl shadow-xl p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden transition-all duration-500 ${
-          cardBg === 'silver' ? 'bg-gradient-to-br from-[#f1f5f9] via-[#ffffff] to-[#e2e8f0] border border-slate-200' :
-          cardBg === 'slate' ? 'bg-gradient-to-br from-[#cbd5e1] via-[#f1f5f9] to-[#94a3b8] border border-slate-300' :
-          cardBg === 'blush' ? 'bg-gradient-to-br from-[#fff1f2] via-[#ffffff] to-[#fce7f3] border border-pink-100' :
-          cardBg === 'gold' ? 'bg-gradient-to-br from-[#fef3c7] via-[#ffffff] to-[#fde68a] border border-amber-100' :
-          'bg-gradient-to-br from-white via-[#faf9ff] to-[#f5f3ff] border border-purple-100/30'
-        }`}>
-          {/* Subtle grid background to look premium */}
-          <div className="absolute inset-0 bg-[radial-gradient(#f4eef5_1px,transparent_1px)] [background-size:16px_16px] opacity-60 pointer-events-none" />
-
-          {/* Visual canvas title */}
-          <div className="relative z-10 w-full flex items-center justify-between text-xs text-purple-900/60 font-semibold px-2">
-            <span>Live Bouquet Canvas</span>
-            {selectedFlowers.length === 0 && (
-              <span className="text-purple-600 animate-pulse">Tap blooms to build arrangement</span>
-            )}
-          </div>
-
-          {/* SVG Arrangement Canvas */}
-          <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden">
-            <svg 
-              viewBox="0 0 400 500" 
-              className="w-full h-full drop-shadow-[0_12px_24px_rgba(92,72,100,0.12)]"
-            >
-              {/* 1. All Stems (in the background, so blooms overlay them) */}
-              <g>
-                {positionedFlowers.map((flower) => (
-                  <AssembledFlower
-                    key={`stem-${flower.id}`}
-                    type={flower.flowerId}
-                    color={flower.color}
-                    wrapX={wrapX}
-                    wrapY={wrapY}
-                    bloomX={flower.bloomX}
-                    bloomY={flower.bloomY}
-                    angle={flower.angle}
-                    scale={flower.scale}
-                  />
-                ))}
-              </g>
-
-              {/* 2. Wrapping Paper & Ribbon overlay (sits on top of stems, but below blooms) */}
-              {selectedFlowers.length > 0 && renderWrapGraphic()}
-
-              {/* 3. Blooms (drawn on top of the wrap, with animation) */}
-              <g>
-                {positionedFlowers.map((flower) => (
-                  <g key={`bloom-${flower.id}`}>
-                    <AssembledFlower
-                      key={`bloom-detail-${flower.id}`}
-                      type={flower.flowerId}
-                      color={flower.color}
-                      wrapX={wrapX}
-                      wrapY={wrapY}
-                      bloomX={flower.bloomX}
-                      bloomY={flower.bloomY}
-                      angle={flower.angle}
-                      scale={flower.scale}
-                      showBloomOnly={true}
-                    />
-                  </g>
-                ))}
-              </g>
-            </svg>
-
-            {/* Quick floating actions / indicators */}
-            <AnimatePresence>
-              {selectedFlowers.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-stone-50/50 backdrop-blur-xs rounded-2xl pointer-events-none"
-                >
-                  <div className="w-14 h-14 rounded-full bg-purple-50 text-purple-400 flex items-center justify-center mb-3 border border-purple-100">
-                    <HelpCircle size={24} className="animate-bounce" />
-                  </div>
-                  <h4 className="font-serif font-bold text-lg text-purple-950">Your Vase is Empty</h4>
-                  <p className="text-xs text-purple-900/60 max-w-[220px] mt-1 leading-relaxed">
-                    Select flower options on the left to start assembling your custom hand-tied bouquet!
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-
+          </motion.div>
         </div>
       </div>
     </div>

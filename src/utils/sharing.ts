@@ -53,7 +53,8 @@ export function deserializeCardState(compressedStr: string): CardState {
       flowers: Array.isArray(state.flowers) ? state.flowers : [],
       music: state.music || 'none',
       wrapStyle: state.wrapStyle || 'kraft',
-      cardBg: state.cardBg || 'white'
+      cardBg: state.cardBg || 'white',
+      customOccasionName: state.customOccasionName || ''
     };
   } catch (error) {
     console.error('Failed to deserialize card state:', error);
