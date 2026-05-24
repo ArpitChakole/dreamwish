@@ -570,7 +570,7 @@ function App() {
                                     onClick={() => handleSelectOccasion(occ.id)}
                                     className={`p-2.5 rounded-xl border text-center flex flex-col justify-center items-center h-20 transition-all cursor-pointer active-press-scale ${
                                       occasion === occ.id
-                                        ? 'bg-purple-700 border-transparent text-white shadow-md scale-[1.03]'
+                                        ? 'bg-gradient-to-r from-violet-400 to-purple-400 border-transparent text-white shadow-md scale-[1.03]'
                                         : 'bg-white border-stone-200/50 hover:bg-stone-50 hover:border-purple-200 hover:shadow-2xs text-slate-800'
                                     }`}
                                   >
@@ -608,7 +608,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -693,7 +693,7 @@ function App() {
                                   <button
                                     onClick={handleAiSuggestion}
                                     disabled={isAiLoading}
-                                    className="flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white px-3.5 rounded-xl shadow-xs active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
+                                    className="flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white px-3.5 rounded-xl shadow-xs active:scale-95 transition-all disabled:opacity-50 cursor-pointer min-h-[36px]"
                                   >
                                     <Sparkles size={11} className={isAiLoading ? 'animate-spin' : ''} />
                                     <span>{isAiLoading ? 'Writing...' : 'AI Assist'}</span>
@@ -747,7 +747,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -802,7 +802,7 @@ function App() {
                               onClick={handleNextStep}
                               className={`group flex items-center justify-between gap-4 font-bold pl-6 pr-2 py-2 rounded-full shadow-md transition-all text-xs uppercase tracking-wider ${
                                 isStepValid()
-                                  ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white active-press-scale cursor-pointer'
+                                  ? 'bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white active-press-scale cursor-pointer'
                                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                               }`}
                             >
@@ -919,7 +919,7 @@ function App() {
                             </button>
                             <button
                               onClick={handleNextStep}
-                              className="group flex items-center justify-between gap-4 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
+                              className="group flex items-center justify-between gap-4 bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white font-bold pl-6 pr-2 py-2 rounded-full shadow-md active-press-scale transition-all cursor-pointer text-xs uppercase tracking-wider"
                             >
                               <span>Preview & Share</span>
                               <span className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
@@ -1080,7 +1080,7 @@ function App() {
 
                             <button
                               onClick={() => handleLoadSavedCard(card.state)}
-                              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
+                              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-violet-400 to-purple-400 hover:from-violet-500 hover:to-purple-500 text-white text-[11px] font-bold text-center block transition-colors cursor-pointer active-press-scale"
                             >
                               Load & Edit Card
                             </button>
